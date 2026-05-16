@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Focus Board Local</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1f7a5b">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.svg">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Local productivity</p>
+          <h1>Focus Board</h1>
+        </div>
+        <div class="date-pill" id="todayLabel"></div>
+      </header>
+
+      <section class="layout">
+        <section class="task-panel" aria-labelledby="tasksTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Checklist hôm nay</p>
+              <h2 id="tasksTitle">Task và timer riêng</h2>
+            </div>
+            <div class="heading-actions">
+              <button class="ghost-button primary-ghost" id="toggleComposerButton" type="button">Thêm công việc</button>
+              <button class="ghost-button" id="clearCompletedButton" type="button">Ẩn task xong</button>
+              <button class="ghost-button" id="exportButton" type="button">Xuất dữ liệu</button>
+              <button class="ghost-button" id="importButton" type="button">Nhập dữ liệu</button>
+              <input id="importFile" type="file" accept="application/json,.json" hidden>
+            </div>
+          </div>
+
+          <div class="task-composer" id="taskComposer" hidden>
+            <div class="edit-banner" id="editBanner" hidden>
+              <span>Đang sửa task: <strong id="editBannerName"></strong></span>
+              <button class="ghost-button" id="cancelEditButton" type="button">Hủy sửa</button>
+            </div>
+
+            <div class="category-manager">
+              <label>
+                Loại mới
+                <input id="newCategoryName" type="text" placeholder="Ví dụ: Học tập, Code, Sức khỏe" autocomplete="off">
+              </label>
+              <button id="addCategoryButton" type="button">Thêm loại mới</button>
+            </div>
+
+            <div class="category-delete">
+              <label>
+                Xóa loại công việc
+                <select id="deleteCategorySelect"></select>
+              </label>
+              <button class="danger-action" id="deleteCategoryButton" type="button">Xóa loại</button>
+            </div>
+
+            <form class="task-form" id="taskForm">
+              <label>
+                Công việc
+                <input id="taskName" name="taskName" type="text" placeholder="Ví dụ: Viết proposal dự án" autocomplete="off" required>
+              </label>
+              <label>
+                Phút dự kiến
+                <input id="taskMinutes" name="taskMinutes" type="number" min="1" max="240" value="25" required>
+              </label>
+              <label>
+                Ngày lên lịch
+                <input id="taskDate" name="taskDate" type="date">
+              </label>
+              <label>
+                Giờ bắt đầu
+                <input id="taskStartTime" name="taskStartTime" type="time">
+              </label>
+              <label>
+                Nghỉ sau task trước
+                <input id="taskGapMinutes" name="taskGapMinutes" type="number" min="0" max="240" step="5" value="10" list="gapOptions">
+                <datalist id="gapOptions">
+                  <option value="5"></option>
+                  <option value="10"></option>
+                  <option value="15"></option>
+                  <option value="30"></option>
+                  <option value="45"></option>
+                  <option value="60"></option>
+                </datalist>
+              </label>
+              <label>
+                Loại công việc
+                <select id="taskCategory" name="taskCategory"></select>
+              </label>
+              <label>
+                Lặp lại
+                <select id="taskRepeat" name="taskRepeat">
+                  <option value="none">Không lặp</option>
+                  <option value="daily">Hằng ngày</option>
+                  <option value="weekdays">Thứ 2 - Thứ 6</option>
+                  <option value="weekly">Hằng tuần (theo thứ)</option>
+                </select>
+              </label>
+              <button type="submit" id="taskSubmitButton">Thêm task</button>
+            </form>
+
+            <div class="recurring-manager" id="recurringManager" hidden>
+              <h3>Lịch lặp lại đang bật</h3>
+              <div class="recurring-list" id="recurringList"></div>
+            </div>
+          </div>
+
+          <div class="active-focus" id="activeFocus">
+            <span class="dot"></span>
+            <span id="activeFocusText">Chưa có timer nào đang chạy</span>
+          </div>
+
+          <label class="task-day-picker">
+            Bảng công việc ngày
+            <input id="taskBoardDate" type="date">
+          </label>
+
+          <div class="task-list" id="taskList" aria-live="polite"></div>
+          <div class="empty-state" id="emptyState">
+            <strong>Chưa có task cho hôm nay.</strong>
+            <span>Bấm Thêm công việc, set thời gian, rồi bắt đầu task đầu tiên.</span>
+          </div>
+        </section>
+
+        <aside class="dashboard" aria-labelledby="dashboardTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h2 id="dashboardTitle">Hiệu quả làm việc</h2>
+            </div>
+          </div>
+
+          <label class="dashboard-filter">
+            Phân tích theo loại
+            <select id="categoryFilter">
+              <option value="all">Tất cả công việc</option>
+            </select>
+          </label>
+
+          <section class="day-clock-section">
+            <div class="clock-heading">
+              <div>
+                <h3>Đồng hồ 24h hôm nay</h3>
+                <span id="clockSummary">Task sẽ xuất hiện ngay khi được tạo.</span>
+              </div>
+              <strong id="clockNow">--:--</strong>
+            </div>
+            <div class="day-clock" id="dayClock"></div>
+            <div class="clock-list" id="dayClockList"></div>
+          </section>
+
+          <div class="score-card">
+            <span>Điểm hiệu quả</span>
+            <strong id="scoreLabel">Chưa có dữ liệu</strong>
+            <div class="meter">
+              <div id="scoreMeter"></div>
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric">
+              <span>Task xong</span>
+              <strong id="doneMetric">0/0</strong>
+            </div>
+            <div class="metric">
+              <span>Phút focus</span>
+              <strong id="minutesMetric">0</strong>
+            </div>
+            <div class="metric">
+              <span>Tỷ lệ hoàn thành</span>
+              <strong id="completionMetric">0%</strong>
+            </div>
+            <div class="metric">
+              <span>Hiệu quả cao</span>
+              <strong id="highMetric">0%</strong>
+            </div>
+          </div>
+
+          <section class="chart-section">
+            <h3>Hôm nay</h3>
+            <div class="task-efficiency" id="dailyEfficiency"></div>
+          </section>
+
+          <section class="chart-section">
+            <h3>Theo loại công việc</h3>
+            <div class="category-breakdown" id="categoryBreakdown"></div>
+          </section>
+
+          <section class="chart-section">
+            <h3>7 ngày gần nhất</h3>
+            <div class="bar-chart" id="weekChart"></div>
+          </section>
+
+          <section class="chart-section">
+            <h3>Tháng này</h3>
+            <div class="month-summary">
+              <div>
+                <span>Ngày có làm</span>
+                <strong id="monthActiveDays">0</strong>
+              </div>
+              <div>
+                <span>Task xong</span>
+                <strong id="monthDoneTasks">0</strong>
+              </div>
+              <div>
+                <span>Phút focus</span>
+                <strong id="monthMinutes">0</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="chart-section">
+            <h3>Lịch sử công việc</h3>
+            <div class="history-controls">
+              <label>
+                Xem theo
+                <select id="historyRange">
+                  <option value="day">Ngày</option>
+                  <option value="week">Tuần</option>
+                  <option value="month">Tháng</option>
+                </select>
+              </label>
+              <label>
+                Mốc thời gian
+                <input id="historyDate" type="date">
+              </label>
+            </div>
+            <div class="history-summary" id="historySummary"></div>
+            <div class="history-list" id="historyList"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+    <script>
+      if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>

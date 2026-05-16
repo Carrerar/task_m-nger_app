@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Focus Board">
+  <rect width="512" height="512" rx="96" fill="#1f7a5b"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#dff1e9" stroke-width="26"/>
+  <line x1="256" y1="256" x2="256" y2="140" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="338" y2="300" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="22" fill="#ffffff"/>
+</svg>
