@@ -125,14 +125,16 @@ function resolveScheduledStart(dateKey, explicitTime, gapMinutes) {
   return combineDateAndTime(dateKey, "08:00");
 }
 
-export function addTask(name, plannedMinutes, category, scheduledDate, scheduledTime, gapMinutes) {
+export function addTask(name, plannedMinutes, category, scheduledDate, scheduledTime) {
   const seconds = plannedMinutes * 60;
   const normalizedCategory = normalizeCategory(category);
   if (normalizedCategory) {
     state.data.categories = normalizeCategories([...(state.data.categories || []), normalizedCategory]);
   }
   const date = scheduledDate || todayKey();
-  const scheduledStart = resolveScheduledStart(date, scheduledTime, gapMinutes);
+  // No explicit time -> resolveScheduledStart chains after the last task
+  // with its default 10-minute gap.
+  const scheduledStart = resolveScheduledStart(date, scheduledTime);
   const scheduledEnd = new Date(scheduledStart.getTime() + plannedMinutes * 60 * 1000);
 
   state.data.tasks.unshift({

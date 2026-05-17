@@ -695,7 +695,7 @@ h3 {
 
 .task-form {
   display: grid;
-  grid-template-columns: repeat(6, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
   align-items: end;
   margin-bottom: 0;
@@ -703,6 +703,14 @@ h3 {
 
 .task-form label:first-child {
   grid-column: span 2;
+}
+
+/* Native date/time pickers need room or their indicator overlaps the
+   value; trim the right padding and stop the field from shrinking. */
+.task-form input[type="date"],
+.task-form input[type="time"] {
+  min-width: 0;
+  padding-right: 6px;
 }
 
 .task-form button {

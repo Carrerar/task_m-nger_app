@@ -18,7 +18,6 @@ export const elements = {
   taskMinutes: document.querySelector("#taskMinutes"),
   taskDate: document.querySelector("#taskDate"),
   taskStartTime: document.querySelector("#taskStartTime"),
-  taskGapMinutes: document.querySelector("#taskGapMinutes"),
   taskBoardDate: document.querySelector("#taskBoardDate"),
   taskCategory: document.querySelector("#taskCategory"),
   taskRepeat: document.querySelector("#taskRepeat"),

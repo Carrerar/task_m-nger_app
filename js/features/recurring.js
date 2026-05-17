@@ -3,7 +3,11 @@ import { saveAndRender } from "../core/bus.js";
 import { elements } from "../core/dom.js";
 import { RECURRENCE_LABEL, WEEKDAY_LABEL } from "../core/constants.js";
 import { createId, normalizeCategory, normalizeCategories } from "../core/utils.js";
-import { todayKey, parseDateKey, combineDateAndTime } from "../core/time.js";
+import { todayKey, parseDateKey, addDays, combineDateAndTime } from "../core/time.js";
+
+// How far ahead recurring templates are materialised so daily/weekly tasks
+// show up on future days (calendar + day board), not just today.
+const MATERIALIZE_DAYS_AHEAD = 60;
 
 function recurrenceAppliesOn(template, date) {
   const dayOfWeek = date.getDay();
@@ -38,18 +42,30 @@ function createTaskFromTemplate(template, dateKey) {
   });
 }
 
+// Materialise every active template from today through the horizon. Kept
+// the name/signature/return so callers (init + day-change) are unchanged.
 export function applyRecurringToday() {
-  const key = todayKey();
-  const today = parseDateKey(key);
-  let created = false;
-  (state.data.recurring || []).forEach((template) => {
-    if (template.active === false) return;
-    if (!recurrenceAppliesOn(template, today)) return;
-    const exists = state.data.tasks.some((task) => task.recurringId === template.id && task.date === key);
-    if (exists) return;
-    createTaskFromTemplate(template, key);
-    created = true;
+  const templates = (state.data.recurring || []).filter((template) => template.active !== false);
+  if (!templates.length) return false;
+
+  const existing = new Set();
+  state.data.tasks.forEach((task) => {
+    if (task.recurringId) existing.add(`${task.recurringId}__${task.date}`);
   });
+
+  const start = parseDateKey(todayKey());
+  let created = false;
+  for (let offset = 0; offset <= MATERIALIZE_DAYS_AHEAD; offset += 1) {
+    const date = addDays(start, offset);
+    const key = todayKey(date);
+    templates.forEach((template) => {
+      if (!recurrenceAppliesOn(template, date)) return;
+      if (existing.has(`${template.id}__${key}`)) return;
+      createTaskFromTemplate(template, key);
+      existing.add(`${template.id}__${key}`);
+      created = true;
+    });
+  }
   return created;
 }
 

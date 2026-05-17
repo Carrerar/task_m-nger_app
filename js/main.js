@@ -66,7 +66,6 @@ elements.taskForm.addEventListener("submit", (event) => {
   const plannedMinutes = Number.parseInt(elements.taskMinutes.value, 10);
   const scheduledDate = elements.taskDate.value || todayKey();
   const scheduledTime = elements.taskStartTime.value;
-  const gapMinutes = Number.parseInt(elements.taskGapMinutes.value, 10);
   const category = elements.taskCategory.value;
   const repeat = elements.taskRepeat.value;
   if (!name || !Number.isFinite(plannedMinutes) || plannedMinutes < 1) return;
@@ -85,7 +84,7 @@ elements.taskForm.addEventListener("submit", (event) => {
       weekday: parseDateKey(scheduledDate).getDay(),
     });
   } else {
-    addTask(name, plannedMinutes, category, scheduledDate, scheduledTime, gapMinutes);
+    addTask(name, plannedMinutes, category, scheduledDate, scheduledTime);
   }
 
   const boardTarget = !wasEditing && repeat && repeat !== "none" ? todayKey() : scheduledDate;
