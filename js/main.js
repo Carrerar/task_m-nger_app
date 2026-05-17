@@ -21,6 +21,7 @@ import {
 } from "./composer.js";
 import { renderTasks, renderActiveFocus } from "./render.js";
 import { renderDashboard } from "./dashboard.js";
+import { renderCalendar, shiftPeriod, goToToday, setCalendarView } from "./calendar.js";
 import { exportData, importData } from "./io.js";
 
 function formatDateLabel() {
@@ -37,6 +38,7 @@ function fullRender() {
   renderCategoryControls();
   renderComposer();
   renderRecurringList();
+  renderCalendar();
   renderTasks();
   renderActiveFocus();
   renderDashboard();
@@ -86,6 +88,11 @@ elements.taskForm.addEventListener("submit", (event) => {
   render();
 });
 
+elements.calendarMonthBtn.addEventListener("click", () => setCalendarView("month"));
+elements.calendarWeekBtn.addEventListener("click", () => setCalendarView("week"));
+elements.calendarPrev.addEventListener("click", () => shiftPeriod(-1));
+elements.calendarNext.addEventListener("click", () => shiftPeriod(1));
+elements.calendarToday.addEventListener("click", goToToday);
 elements.clearCompletedButton.addEventListener("click", clearCompletedToday);
 elements.exportButton.addEventListener("click", exportData);
 elements.importButton.addEventListener("click", () => elements.importFile.click());

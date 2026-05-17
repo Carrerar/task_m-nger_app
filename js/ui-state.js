@@ -1,4 +1,4 @@
-import { todayKey } from "./time.js";
+import { todayKey, monthKey, startOfWeek } from "./time.js";
 
 // Mutable, shared UI state. Modules read and write fields directly.
 export const ui = {
@@ -8,4 +8,7 @@ export const ui = {
   editingTaskId: null,
   taskBoardDate: todayKey(),
   materializedDay: todayKey(),
+  calendarMonth: monthKey(),
+  calendarView: "month",
+  calendarWeekStart: todayKey(startOfWeek()),
 };

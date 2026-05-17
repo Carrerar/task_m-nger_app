@@ -5,6 +5,12 @@ export function todayKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+export function monthKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
+}
+
 export function parseDateKey(key) {
   const [year, month, day] = key.split("-").map(Number);
   return new Date(year, month - 1, day);
@@ -14,6 +20,11 @@ export function addDays(date, amount) {
   const next = new Date(date);
   next.setDate(next.getDate() + amount);
   return next;
+}
+
+export function startOfWeek(date = new Date()) {
+  const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  return addDays(start, -start.getDay());
 }
 
 export function combineDateAndTime(dateKey, timeValue) {
