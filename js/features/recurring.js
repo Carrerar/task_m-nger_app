@@ -1,9 +1,9 @@
-import { state } from "./store.js";
-import { saveAndRender } from "./bus.js";
-import { elements } from "./dom.js";
-import { RECURRENCE_LABEL, WEEKDAY_LABEL } from "./constants.js";
-import { createId, normalizeCategory, normalizeCategories } from "./utils.js";
-import { todayKey, parseDateKey, combineDateAndTime } from "./time.js";
+import { state } from "../core/store.js";
+import { saveAndRender } from "../core/bus.js";
+import { elements } from "../core/dom.js";
+import { RECURRENCE_LABEL, WEEKDAY_LABEL } from "../core/constants.js";
+import { createId, normalizeCategory, normalizeCategories } from "../core/utils.js";
+import { todayKey, parseDateKey, combineDateAndTime } from "../core/time.js";
 
 function recurrenceAppliesOn(template, date) {
   const dayOfWeek = date.getDay();

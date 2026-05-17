@@ -1,8 +1,8 @@
-import { state } from "./store.js";
-import { ui } from "./ui-state.js";
-import { saveAndRender } from "./bus.js";
-import { elements } from "./dom.js";
-import { normalizeCategory, normalizeCategories } from "./utils.js";
+import { state } from "../core/store.js";
+import { ui } from "../core/ui-state.js";
+import { saveAndRender } from "../core/bus.js";
+import { elements } from "../core/dom.js";
+import { normalizeCategory, normalizeCategories } from "../core/utils.js";
 
 export function addCategory(name) {
   const normalizedCategory = normalizeCategory(name);

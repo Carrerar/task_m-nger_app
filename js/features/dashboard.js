@@ -1,7 +1,7 @@
-import { state } from "./store.js";
-import { ui } from "./ui-state.js";
-import { elements } from "./dom.js";
-import { RATING_SCORE, RATING_LABEL } from "./constants.js";
+import { state } from "../core/store.js";
+import { ui } from "../core/ui-state.js";
+import { elements } from "../core/dom.js";
+import { RATING_SCORE, RATING_LABEL } from "../core/constants.js";
 import {
   todayKey,
   parseDateKey,
@@ -11,8 +11,8 @@ import {
   formatDateLong,
   minuteOfDay,
   minutesLabel,
-} from "./time.js";
-import { escapeHtml } from "./utils.js";
+} from "../core/time.js";
+import { escapeHtml } from "../core/utils.js";
 import {
   todayTasks,
   categoryMatches,
@@ -24,7 +24,7 @@ import {
   analysisCategories,
   scoreLabel,
   scheduleDriftLabel,
-} from "./selectors.js";
+} from "../core/selectors.js";
 
 export function renderDashboard() {
   const tasks = todayTasks().filter(categoryMatches);

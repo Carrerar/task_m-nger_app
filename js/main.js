@@ -1,29 +1,29 @@
-import { state, saveData } from "./store.js";
-import { ui } from "./ui-state.js";
-import { setRenderer, render } from "./bus.js";
-import { elements } from "./dom.js";
-import { todayKey, parseDateKey } from "./time.js";
-import { activeTask } from "./selectors.js";
+import { state, saveData } from "./core/store.js";
+import { ui } from "./core/ui-state.js";
+import { setRenderer, render } from "./core/bus.js";
+import { elements } from "./core/dom.js";
+import { todayKey, parseDateKey } from "./core/time.js";
+import { activeTask } from "./core/selectors.js";
 import {
   addTask,
   updateTask,
   clearCompletedToday,
   startTicker,
   syncRunningTask,
-} from "./tasks.js";
-import { addRecurring, applyRecurringToday, renderRecurringList } from "./recurring.js";
-import { addCategory, deleteCategory } from "./categories.js";
+} from "./features/tasks.js";
+import { addRecurring, applyRecurringToday, renderRecurringList } from "./features/recurring.js";
+import { addCategory, deleteCategory } from "./features/categories.js";
 import {
   renderCategoryControls,
   renderComposer,
   startEditTask,
   cancelEdit,
-} from "./composer.js";
-import { renderTasks, renderActiveFocus } from "./render.js";
-import { renderDashboard } from "./dashboard.js";
-import { renderCalendar, shiftPeriod, goToToday, setCalendarView } from "./calendar.js";
-import { initTrain } from "./train.js";
-import { exportData, importData } from "./io.js";
+} from "./features/composer.js";
+import { renderTasks, renderActiveFocus } from "./ui/render.js";
+import { renderDashboard } from "./features/dashboard.js";
+import { renderCalendar, shiftPeriod, goToToday, setCalendarView } from "./features/calendar.js";
+import { initTrain } from "./ui/train.js";
+import { exportData, importData } from "./features/io.js";
 
 function formatDateLabel() {
   const formatter = new Intl.DateTimeFormat("vi-VN", {

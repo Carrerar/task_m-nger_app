@@ -1,9 +1,9 @@
-import { state } from "./store.js";
-import { ui } from "./ui-state.js";
-import { render } from "./bus.js";
-import { elements } from "./dom.js";
-import { todayKey, monthKey, parseDateKey, addDays, startOfWeek, formatTime } from "./time.js";
-import { taskCategory, taskColor, scheduledWindow } from "./selectors.js";
+import { state } from "../core/store.js";
+import { ui } from "../core/ui-state.js";
+import { render } from "../core/bus.js";
+import { elements } from "../core/dom.js";
+import { todayKey, monthKey, parseDateKey, addDays, startOfWeek, formatTime } from "../core/time.js";
+import { taskCategory, taskColor, scheduledWindow } from "../core/selectors.js";
 
 const WEEKDAY_SHORT = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 const MAX_CHIPS = 3;

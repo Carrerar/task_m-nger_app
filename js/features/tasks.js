@@ -1,16 +1,16 @@
-import { state } from "./store.js";
-import { ui } from "./ui-state.js";
-import { saveAndRender, render } from "./bus.js";
-import { unlockAudio, playDoneBell } from "./audio.js";
-import { createId, normalizeCategory, normalizeCategories } from "./utils.js";
-import { todayKey, combineDateAndTime, formatTimeInput, minutesLabel } from "./time.js";
+import { state } from "../core/store.js";
+import { ui } from "../core/ui-state.js";
+import { saveAndRender, render } from "../core/bus.js";
+import { unlockAudio, playDoneBell } from "../ui/audio.js";
+import { createId, normalizeCategory, normalizeCategories } from "../core/utils.js";
+import { todayKey, combineDateAndTime, formatTimeInput, minutesLabel } from "../core/time.js";
 import {
   activeTask,
   lockedTask,
   ensureSingleTimer,
   taskCategory,
   taskTimeWindow,
-} from "./selectors.js";
+} from "../core/selectors.js";
 
 let tickHandle = null;
 

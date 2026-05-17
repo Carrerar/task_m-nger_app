@@ -146,7 +146,7 @@ button:disabled {
   border: 1px solid var(--line);
   overflow: hidden;
   isolation: isolate;
-  background: #141a3a url("bg-train-dusk.png") center top / cover no-repeat;
+  background: #141a3a url("assets/bg-train-dusk.png") center top / cover no-repeat;
   box-shadow: var(--shadow);
 }
 

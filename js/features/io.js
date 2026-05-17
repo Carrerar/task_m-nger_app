@@ -1,7 +1,7 @@
-import { state, replaceData } from "./store.js";
-import { ui } from "./ui-state.js";
-import { saveAndRender } from "./bus.js";
-import { todayKey } from "./time.js";
+import { state, replaceData } from "../core/store.js";
+import { ui } from "../core/ui-state.js";
+import { saveAndRender } from "../core/bus.js";
+import { todayKey } from "../core/time.js";
 
 export function exportData() {
   const blob = new Blob([JSON.stringify(state.data, null, 2)], { type: "application/json" });

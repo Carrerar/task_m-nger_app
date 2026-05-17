@@ -1,7 +1,7 @@
-import { ui } from "./ui-state.js";
-import { elements } from "./dom.js";
-import { RATING_LABEL } from "./constants.js";
-import { secondsToClock, minutesLabel, formatTime } from "./time.js";
+import { ui } from "../core/ui-state.js";
+import { elements } from "../core/dom.js";
+import { RATING_LABEL } from "../core/constants.js";
+import { secondsToClock, minutesLabel, formatTime } from "../core/time.js";
 import {
   todayVisibleTasks,
   activeTask,
@@ -14,9 +14,9 @@ import {
   actualWindowLabel,
   scheduleDriftLabel,
   canStartTask,
-} from "./selectors.js";
-import { escapeHtml } from "./utils.js";
-import { todayKey } from "./time.js";
+} from "../core/selectors.js";
+import { escapeHtml } from "../core/utils.js";
+import { todayKey } from "../core/time.js";
 import {
   toggleComplete,
   pauseTask,
@@ -25,8 +25,8 @@ import {
   resetTask,
   deleteTask,
   setRating,
-} from "./tasks.js";
-import { startEditTask } from "./composer.js";
+} from "../features/tasks.js";
+import { startEditTask } from "../features/composer.js";
 
 function actionButton(label, handler, primary = false, className = "") {
   const button = document.createElement("button");

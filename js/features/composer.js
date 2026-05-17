@@ -1,9 +1,9 @@
-import { state } from "./store.js";
-import { ui } from "./ui-state.js";
-import { render } from "./bus.js";
-import { elements } from "./dom.js";
-import { formatTimeInput } from "./time.js";
-import { knownCategories, analysisCategories } from "./selectors.js";
+import { state } from "../core/store.js";
+import { ui } from "../core/ui-state.js";
+import { render } from "../core/bus.js";
+import { elements } from "../core/dom.js";
+import { formatTimeInput } from "../core/time.js";
+import { knownCategories, analysisCategories } from "../core/selectors.js";
 import { syncRunningTask } from "./tasks.js";
 
 export function renderCategoryControls() {
