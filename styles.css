@@ -1,19 +1,30 @@
 :root {
-  color-scheme: light;
-  --bg: #f7f8f5;
-  --surface: #ffffff;
-  --surface-soft: #eef3ed;
-  --ink: #202522;
-  --muted: #687169;
-  --line: #dfe6dd;
-  --accent: #1f7a5b;
-  --accent-strong: #145f46;
-  --accent-soft: #dff1e9;
-  --warn: #b7791f;
-  --low: #d95b59;
-  --mid: #c58a2a;
-  --high: #27845f;
-  --shadow: 0 20px 60px rgba(31, 46, 38, 0.08);
+  color-scheme: dark;
+  --bg: #0b0b10;
+  --surface: #15151d;
+  --surface-soft: #1d1d28;
+  --ink: #f4f3f8;
+  --muted: #9a96ab;
+  --line: #2a2a37;
+  --accent: #a472f6;
+  --accent-strong: #b98ffc;
+  --accent-soft: rgba(164, 114, 246, 0.16);
+  --warn: #e0a23c;
+  --low: #f0716e;
+  --mid: #e0a23c;
+  --high: #3fbf8f;
+  --danger-line: rgba(240, 113, 110, 0.42);
+  --danger-soft: rgba(240, 113, 110, 0.12);
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+body {
+  background:
+    radial-gradient(1200px 620px at 50% -220px, rgba(124, 77, 255, 0.28), transparent 70%),
+    radial-gradient(900px 500px at 85% 0, rgba(64, 105, 200, 0.16), transparent 65%),
+    var(--bg);
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 * {
@@ -113,7 +124,8 @@ h3 {
 .dashboard {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(8px);
   box-shadow: var(--shadow);
 }
 
@@ -436,19 +448,19 @@ h3 {
 
 .ghost-button:hover {
   color: var(--ink);
-  border-color: #c8d4ca;
+  border-color: var(--accent);
 }
 
 .primary-ghost {
-  border-color: rgba(31, 122, 91, 0.28);
+  border-color: rgba(164, 114, 246, 0.4);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 
 .task-composer {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fbfcfb;
+  background: var(--surface-soft);
   padding: 12px;
   margin-bottom: 14px;
 }
@@ -458,7 +470,7 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  border: 1px solid rgba(31, 122, 91, 0.28);
+  border: 1px solid rgba(164, 114, 246, 0.4);
   border-radius: 8px;
   background: var(--accent-soft);
   color: var(--accent-strong);
@@ -512,9 +524,9 @@ h3 {
   flex: 0 0 auto;
   min-height: 34px;
   border-radius: 8px;
-  border: 1px solid #ecd0cf;
-  background: #fff4f3;
-  color: #9a3f3e;
+  border: 1px solid var(--danger-line);
+  background: var(--danger-soft);
+  color: var(--low);
   padding: 0 11px;
   font-weight: 900;
 }
@@ -549,7 +561,7 @@ h3 {
 }
 
 .category-delete {
-  background: #fff9f8;
+  background: var(--danger-soft);
 }
 
 label {
@@ -608,14 +620,14 @@ select {
 
 .category-delete button,
 .category-delete button.primary-action {
-  border: 1px solid #ecd0cf;
-  background: #fff4f3;
-  color: #9a3f3e;
+  border: 1px solid var(--danger-line);
+  background: var(--danger-soft);
+  color: var(--low);
 }
 
 .category-delete button:hover,
 .category-delete button.primary-action:hover {
-  background: #ffe7e4;
+  background: rgba(240, 113, 110, 0.2);
 }
 
 .active-focus {
@@ -636,18 +648,18 @@ select {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #9ca7a0;
+  background: var(--muted);
 }
 
 .active-focus.is-running .dot {
   background: var(--accent);
-  box-shadow: 0 0 0 6px rgba(31, 122, 91, 0.12);
+  box-shadow: 0 0 0 6px rgba(164, 114, 246, 0.22);
 }
 
 .active-focus.is-blocked {
-  border-color: #e0b4aa;
-  background: #fff1ee;
-  color: #97463d;
+  border-color: var(--danger-line);
+  background: var(--danger-soft);
+  color: var(--low);
 }
 
 .task-day-picker {
@@ -674,13 +686,13 @@ select {
 }
 
 .task-card.is-complete {
-  background: #fbfcfb;
+  background: var(--surface-soft);
 }
 
 .check-button {
   width: 28px;
   height: 28px;
-  border: 1px solid #bed0c4;
+  border: 1px solid var(--line);
   border-radius: 7px;
   background: var(--surface);
   color: transparent;
@@ -741,7 +753,7 @@ select {
 .progress {
   height: 10px;
   border-radius: 999px;
-  background: #e8eee8;
+  background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
@@ -806,28 +818,28 @@ select {
 
 .task-actions button:hover,
 .rating-options button:hover {
-  border-color: #b8c8bc;
+  border-color: var(--accent);
 }
 
 .danger-action {
-  border-color: #ecd0cf !important;
-  color: #9a3f3e !important;
+  border-color: var(--danger-line) !important;
+  color: var(--low) !important;
 }
 
 .finish-early-action {
-  border-color: #d6c89c !important;
-  background: #fff9e8 !important;
-  color: #8a6418 !important;
+  border-color: rgba(224, 162, 60, 0.42) !important;
+  background: rgba(224, 162, 60, 0.12) !important;
+  color: var(--warn) !important;
 }
 
 .finish-early-action:hover {
-  border-color: #c9ad5a !important;
-  background: #fff2cf !important;
+  border-color: rgba(224, 162, 60, 0.7) !important;
+  background: rgba(224, 162, 60, 0.22) !important;
 }
 
 .task-card:has(.status-badge) .danger-action:hover {
-  border-color: #d7a4a3;
-  background: #fff4f3;
+  border-color: var(--low);
+  background: var(--danger-soft);
 }
 
 .rating-box {
@@ -927,13 +939,13 @@ select {
 }
 
 .clock-face {
-  fill: #f8faf7;
+  fill: var(--surface-soft);
   stroke: var(--line);
   stroke-width: 2;
 }
 
 .hour-marks line {
-  stroke: #aebcaf;
+  stroke: var(--muted);
   stroke-linecap: round;
 }
 
@@ -954,7 +966,7 @@ select {
 }
 
 .task-arc.running {
-  filter: drop-shadow(0 0 4px rgba(31, 122, 91, 0.28));
+  filter: drop-shadow(0 0 5px rgba(164, 114, 246, 0.55));
 }
 
 .task-arc.paused {
@@ -1036,7 +1048,7 @@ select {
 .meter {
   height: 10px;
   border-radius: 999px;
-  background: #dce6dd;
+  background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
@@ -1114,7 +1126,7 @@ select {
 .category-track {
   height: 9px;
   border-radius: 999px;
-  background: #e8eee8;
+  background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
@@ -1168,9 +1180,9 @@ select {
 
 .empty-state {
   display: none;
-  border: 1px dashed #c6d3c8;
+  border: 1px dashed var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.025);
   padding: 18px;
 }
 
@@ -1203,7 +1215,7 @@ select {
   align-items: end;
   height: 104px;
   border-radius: 8px;
-  background: #edf2ed;
+  background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
@@ -1295,7 +1307,7 @@ select {
 }
 
 .history-task.running {
-  background: #f4fbf7;
+  background: var(--accent-soft);
 }
 
 .history-date {
