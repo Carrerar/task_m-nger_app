@@ -1,4 +1,4 @@
-const CACHE = "focus-board-v6";
+const CACHE = "focus-board-v7";
 
 const APP_SHELL = [
   "./",
@@ -6,6 +6,7 @@ const APP_SHELL = [
   "./styles.css",
   "./manifest.webmanifest",
   "./icon.svg",
+  "./bg-train-dusk.png",
   "./js/main.js",
   "./js/constants.js",
   "./js/time.js",

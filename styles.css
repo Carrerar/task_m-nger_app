@@ -120,44 +120,51 @@ button:disabled {
   padding: 28px 0 40px;
 }
 
+/* Dusk-image hero: backs the header + calendar; its bottom edge is the
+   divider between the top region and the dark v6 area below. */
+.hero {
+  position: relative;
+  margin-bottom: 22px;
+  padding: 0 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  isolation: isolate;
+  background: #141a3a url("bg-train-dusk.png") center top / cover no-repeat;
+  box-shadow: var(--shadow);
+}
+
+.hero::before {
+  /* darken the dusk scene so foreground text and cards stay readable */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 11, 16, 0.28) 0%,
+    rgba(11, 11, 16, 0.1) 38%,
+    rgba(11, 11, 16, 0.72) 100%
+  );
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero .calendar-panel {
+  margin-bottom: 0;
+}
+
 .topbar {
   position: relative;
   display: flex;
   align-items: end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 22px;
-  padding: 30px 26px 46px;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  overflow: hidden;
-  isolation: isolate;
-  background:
-    radial-gradient(2px 2px at 18% 22%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1.5px 1.5px at 42% 14%, rgba(255, 255, 255, 0.55), transparent),
-    radial-gradient(1.5px 1.5px at 68% 28%, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(2px 2px at 84% 16%, rgba(255, 255, 255, 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 30% 36%, rgba(255, 255, 255, 0.4), transparent),
-    linear-gradient(
-      180deg,
-      #141a3a 0%,
-      #1f2750 32%,
-      #3a3e6c 52%,
-      #8a5f81 70%,
-      #c98a7e 84%,
-      #cf9e6d 100%
-    );
-  box-shadow: var(--shadow);
-}
-
-.topbar::after {
-  /* warm horizon glow under the dusk band */
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 38%;
-  background: radial-gradient(120% 100% at 50% 100%, rgba(231, 168, 122, 0.4), transparent 70%);
-  z-index: -1;
+  margin-bottom: 12px;
+  padding: 34px 16px 28px;
 }
 
 .eyebrow {
