@@ -1,4 +1,5 @@
 import { ui } from "../core/ui-state.js";
+import { render } from "../core/bus.js";
 import { elements } from "../core/dom.js";
 import { RATING_LABEL } from "../core/constants.js";
 import { secondsToClock, minutesLabel, formatTime } from "../core/time.js";
@@ -25,6 +26,7 @@ import {
   resetTask,
   deleteTask,
   setRating,
+  updateTask,
 } from "../features/tasks.js";
 import { startEditTask } from "../features/composer.js";
 
@@ -59,9 +61,70 @@ function renderRatingBox(task) {
   return box;
 }
 
+// Quick inline edit of the two most-edited fields (name + planned minutes)
+// right on the card. "Sửa chi tiết" still opens the full composer for
+// category/date/repeat. Reuses updateTask (keeps the existing schedule).
+function renderInlineEditor(task) {
+  const wrap = document.createElement("div");
+  wrap.className = "task-inline-edit";
+  wrap.innerHTML = `
+    <input class="ie-name" type="text" aria-label="Tên công việc" autocomplete="off">
+    <input class="ie-min" type="number" min="1" max="240" aria-label="Phút dự kiến">
+  `;
+  const nameInput = wrap.querySelector(".ie-name");
+  const minInput = wrap.querySelector(".ie-min");
+  nameInput.value = task.name;
+  minInput.value = task.plannedMinutes;
+
+  const save = () => {
+    const name = nameInput.value.trim();
+    const plannedMinutes = Number.parseInt(minInput.value, 10);
+    if (!name || !Number.isFinite(plannedMinutes) || plannedMinutes < 1) return;
+    ui.inlineEditId = null;
+    updateTask(task.id, {
+      name,
+      plannedMinutes,
+      category: task.category,
+      scheduledDate: task.date,
+      scheduledTime: "",
+    });
+  };
+  const cancel = () => {
+    ui.inlineEditId = null;
+    render();
+  };
+  const onKey = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      save();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      cancel();
+    }
+  };
+  nameInput.addEventListener("keydown", onKey);
+  minInput.addEventListener("keydown", onKey);
+
+  const bar = document.createElement("div");
+  bar.className = "ie-actions";
+  bar.append(
+    actionButton("Lưu", save, true),
+    actionButton("Hủy", cancel),
+    actionButton("Sửa chi tiết", () => {
+      ui.inlineEditId = null;
+      startEditTask(task.id);
+    }, false, "ie-detail"),
+  );
+  wrap.append(bar);
+
+  queueMicrotask(() => nameInput.focus());
+  return wrap;
+}
+
 function renderTask(task) {
   const card = document.createElement("article");
   card.className = `task-card${task.status === "complete" ? " is-complete" : ""}`;
+  const editing = ui.inlineEditId === task.id;
 
   const check = document.createElement("button");
   check.type = "button";
@@ -126,12 +189,15 @@ function renderTask(task) {
   if (task.status !== "complete") {
     actions.append(actionButton("Reset", () => resetTask(task.id)));
   }
-  if (task.status !== "running") {
-    actions.append(actionButton("Sửa", () => startEditTask(task.id)));
+  if (task.status !== "running" && !editing) {
+    actions.append(actionButton("Sửa", () => {
+      ui.inlineEditId = task.id;
+      render();
+    }));
   }
   actions.append(actionButton("Xóa task", () => deleteTask(task.id), false, "danger-action"));
 
-  main.append(titleRow, readout, meta, actions);
+  main.append(editing ? renderInlineEditor(task) : titleRow, readout, meta, actions);
 
   if (task.status === "complete") {
     main.append(renderRatingBox(task));

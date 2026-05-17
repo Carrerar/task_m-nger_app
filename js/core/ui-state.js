@@ -6,6 +6,7 @@ export const ui = {
   startBlockMessage: "",
   composerOpen: false,
   editingTaskId: null,
+  inlineEditId: null,
   taskBoardDate: todayKey(),
   materializedDay: todayKey(),
   calendarMonth: monthKey(),

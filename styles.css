@@ -885,6 +885,65 @@ select {
   font-weight: 900;
 }
 
+.task-inline-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.task-inline-edit .ie-name {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.task-inline-edit .ie-min {
+  flex: 0 0 86px;
+  width: 86px;
+}
+
+.task-inline-edit input {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  padding: 8px 10px;
+  font-weight: 700;
+}
+
+.task-inline-edit input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.ie-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-basis: 100%;
+}
+
+.ie-actions button {
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.ie-actions button.primary-action {
+  background: var(--accent);
+  color: #fff;
+}
+
+.ie-actions .ie-detail {
+  margin-left: auto;
+  background: transparent;
+  color: var(--muted);
+  text-decoration: underline;
+}
+
 .timer-readout {
   display: grid;
   grid-template-columns: 104px minmax(0, 1fr);
