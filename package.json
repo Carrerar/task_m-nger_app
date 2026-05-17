@@ -1,0 +1,11 @@
+{
+  "name": "focus-board",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local productivity board: tasks, timers, recurring schedules, calendar and dashboard. Vanilla ES modules, no runtime dependencies.",
+  "scripts": {
+    "test": "node --test tests/",
+    "serve": "node serve.mjs"
+  }
+}

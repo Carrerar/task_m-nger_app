@@ -4,5 +4,8 @@ Desktop.ini
 .DS_Store
 .vscode/
 
+# Node (only for tests/tooling — the app itself has no runtime deps)
+node_modules/
+
 # Local data backups exported from the app
 focus-board-backup-*.json
