@@ -24,6 +24,7 @@ const APP_SHELL = [
   "./js/render.js",
   "./js/dashboard.js",
   "./js/calendar.js",
+  "./js/train.js",
 ];
 
 self.addEventListener("install", (event) => {

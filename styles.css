@@ -55,6 +55,65 @@ button:disabled {
   opacity: 0.45;
 }
 
+.train-rail {
+  --train-color: #a472f6;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.train-rail svg {
+  width: 100%;
+  height: 100%;
+}
+
+.train-rail-base {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 2;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+}
+
+.train-rail-progress {
+  fill: none;
+  stroke: var(--train-color);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.55;
+  transition: stroke 600ms ease;
+}
+
+.train-car {
+  fill: var(--train-color);
+  transition: fill 600ms ease;
+}
+
+.train-engine {
+  filter: drop-shadow(0 0 6px var(--train-color));
+}
+
+@media (max-width: 760px) {
+  .train-rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .train-engine {
+    filter: none;
+  }
+
+  .train-rail-progress,
+  .train-car {
+    transition: none;
+  }
+}
+
 .app-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;

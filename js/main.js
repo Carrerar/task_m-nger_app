@@ -22,6 +22,7 @@ import {
 import { renderTasks, renderActiveFocus } from "./render.js";
 import { renderDashboard } from "./dashboard.js";
 import { renderCalendar, shiftPeriod, goToToday, setCalendarView } from "./calendar.js";
+import { initTrain } from "./train.js";
 import { exportData, importData } from "./io.js";
 
 function formatDateLabel() {
@@ -172,3 +173,4 @@ render();
 if (activeTask()) {
   startTicker();
 }
+initTrain();
