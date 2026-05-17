@@ -1,6 +1,6 @@
 import { state, saveData } from "./core/store.js";
 import { ui } from "./core/ui-state.js";
-import { setRenderer, render } from "./core/bus.js";
+import { setRenderer, setTickRenderer, render } from "./core/bus.js";
 import { elements } from "./core/dom.js";
 import { todayKey, parseDateKey } from "./core/time.js";
 import { activeTask } from "./core/selectors.js";
@@ -20,7 +20,7 @@ import {
   cancelEdit,
 } from "./features/composer.js";
 import { renderTasks, renderActiveFocus } from "./ui/render.js";
-import { renderDashboard } from "./features/dashboard.js";
+import { renderDashboard, renderClockNow } from "./features/dashboard.js";
 import { renderCalendar, shiftPeriod, goToToday, setCalendarView } from "./features/calendar.js";
 import { initTrain } from "./ui/train.js";
 import { exportData, importData } from "./features/io.js";
@@ -46,6 +46,17 @@ function fullRender() {
 }
 
 setRenderer(fullRender);
+
+// Cheap per-second update used by the timer ticker: only the parts that
+// actually change every second. Other panels refresh on the next state
+// change or the 60s heartbeat.
+function tickRender() {
+  renderTasks();
+  renderActiveFocus();
+  renderClockNow();
+}
+
+setTickRenderer(tickRender);
 
 /* ------------------------------- events ------------------------------- */
 
@@ -158,6 +169,15 @@ window.setInterval(() => {
 window.addEventListener("beforeunload", () => {
   syncRunningTask();
   saveData();
+});
+
+// Saves are throttled while the timer ticks, so flush whenever the page is
+// backgrounded — covers PWA/mobile closes where beforeunload may not fire.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    syncRunningTask();
+    saveData();
+  }
 });
 
 /* -------------------------------- init -------------------------------- */

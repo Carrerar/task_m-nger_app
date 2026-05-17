@@ -1,5 +1,13 @@
 export const STORAGE_KEY = "personal_productivity_data_v1";
 
+// Per-second timer tick throttles the localStorage write to this interval.
+// Full saves still happen on every state change + visibility/unload.
+export const TICK_SAVE_MS = 12000;
+
+// `data.sessions` is append-only telemetry never surfaced in the UI; keep
+// only the most recent N so the stored payload can't grow unbounded.
+export const SESSION_CAP = 1000;
+
 export const RATING_SCORE = { low: 1, medium: 2, high: 3 };
 export const RATING_LABEL = { low: "Thấp", medium: "Trung bình", high: "Cao" };
 

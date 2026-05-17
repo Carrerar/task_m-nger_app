@@ -65,6 +65,24 @@ function renderDayClock(tasks) {
   renderClockList(displayTasks);
 }
 
+// Per-second update of just the clock's "now" hand + time labels, without
+// rebuilding the task arcs (which only change on a state change). Geometry
+// must stay in sync with buildClockSvg() below.
+export function renderClockNow() {
+  const now = new Date();
+  elements.clockNow.textContent = formatTime(now);
+
+  const hand = elements.dayClock.querySelector(".now-hand");
+  if (!hand) return; // clock SVG not built yet (no full render done)
+
+  const point = pointOnCircle(150, 150, 108 + 8, minuteOfDay(now));
+  hand.setAttribute("x2", point.x);
+  hand.setAttribute("y2", point.y);
+
+  const centerTime = elements.dayClock.querySelector(".clock-center-time");
+  if (centerTime) centerTime.textContent = formatTime(now);
+}
+
 function pointOnCircle(cx, cy, radius, minute) {
   const angle = (minute / 1440) * Math.PI * 2 - Math.PI / 2;
   return {

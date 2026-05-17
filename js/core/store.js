@@ -1,5 +1,10 @@
-import { STORAGE_KEY } from "./constants.js";
+import { STORAGE_KEY, SESSION_CAP } from "./constants.js";
 import { normalizeCategories } from "./utils.js";
+
+function capSessions(sessions) {
+  const list = Array.isArray(sessions) ? sessions : [];
+  return list.length > SESSION_CAP ? list.slice(-SESSION_CAP) : list;
+}
 
 function loadData() {
   const fallback = { schemaVersion: 1, tasks: [], sessions: [], categories: [], recurring: [] };
@@ -16,7 +21,7 @@ function loadData() {
     return {
       schemaVersion: 1,
       tasks,
-      sessions: Array.isArray(parsed.sessions) ? parsed.sessions : [],
+      sessions: capSessions(parsed.sessions),
       categories: normalizeCategories([...storedCategories, ...taskCategories]),
       recurring: Array.isArray(parsed.recurring) ? parsed.recurring : [],
     };
@@ -29,6 +34,7 @@ function loadData() {
 export const state = { data: loadData() };
 
 export function saveData() {
+  state.data.sessions = capSessions(state.data.sessions);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
 }
 

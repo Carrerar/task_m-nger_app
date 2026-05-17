@@ -1,6 +1,7 @@
-import { state } from "../core/store.js";
+import { state, saveData } from "../core/store.js";
 import { ui } from "../core/ui-state.js";
-import { saveAndRender, render } from "../core/bus.js";
+import { saveAndRender, render, renderTick } from "../core/bus.js";
+import { TICK_SAVE_MS } from "../core/constants.js";
 import { unlockAudio, playDoneBell } from "../ui/audio.js";
 import { createId, normalizeCategory, normalizeCategories } from "../core/utils.js";
 import { todayKey, combineDateAndTime, formatTimeInput, minutesLabel } from "../core/time.js";
@@ -13,6 +14,7 @@ import {
 } from "../core/selectors.js";
 
 let tickHandle = null;
+let lastTickSaveAt = 0;
 
 /* ----------------------------- timer engine ----------------------------- */
 
@@ -67,11 +69,27 @@ function addSession(task, completedTimer, reason = "legacy") {
 
 export function startTicker() {
   if (tickHandle) return;
+  lastTickSaveAt = Date.now();
   tickHandle = window.setInterval(() => {
+    const wasActive = Boolean(activeTask());
     syncRunningTask();
-    saveAndRender();
+
+    // No running task anymore: the countdown hit zero (state change ->
+    // status complete) or the timer was paused. Persist + full render so
+    // the dashboard/calendar reflect the change, then stop ticking.
     if (!activeTask()) {
+      if (wasActive) saveAndRender();
       stopTicker();
+      return;
+    }
+
+    // Normal second: only the countdown / active-focus / clock hand move.
+    // Render those cheaply; throttle the localStorage write so we don't
+    // JSON.stringify the whole DB every second.
+    renderTick();
+    if (Date.now() - lastTickSaveAt >= TICK_SAVE_MS) {
+      saveData();
+      lastTickSaveAt = Date.now();
     }
   }, 1000);
 }
