@@ -93,6 +93,9 @@ export function initTrain() {
 
     const color = activeZoneColor();
     root.style.setProperty("--train-color", color);
+    // Expose the active zone colour globally so the page background can
+    // tint itself to match the train.
+    doc.style.setProperty("--train-color", color);
 
     const headLen = pct * total;
     progress.style.strokeDashoffset = String(total - headLen);

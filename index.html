@@ -13,37 +13,37 @@
   <body>
     <main class="app-shell">
       <div class="hero">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Local productivity</p>
-          <h1>Focus Board</h1>
-        </div>
-        <div class="date-pill" id="todayLabel"></div>
-      </header>
-
-      <section class="calendar-panel" aria-labelledby="calendarTitle">
-        <div class="section-heading">
+        <header class="topbar">
           <div>
-            <p class="eyebrow">Thời khóa biểu</p>
-            <h2 id="calendarTitle">Lịch tháng</h2>
-            <div class="view-toggle" role="group" aria-label="Chế độ lịch">
-              <button class="view-toggle-btn" id="calendarMonthBtn" type="button">Lịch tháng</button>
-              <button class="view-toggle-btn" id="calendarWeekBtn" type="button">Lịch tuần</button>
+            <p class="eyebrow">Local productivity</p>
+            <h1>Focus Board</h1>
+          </div>
+          <div class="date-pill" id="todayLabel"></div>
+        </header>
+
+        <section class="calendar-panel" aria-labelledby="calendarTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Thời khóa biểu</p>
+              <h2 id="calendarTitle">Lịch tháng</h2>
+              <div class="view-toggle" role="group" aria-label="Chế độ lịch">
+                <button class="view-toggle-btn" id="calendarMonthBtn" type="button">Lịch tháng</button>
+                <button class="view-toggle-btn" id="calendarWeekBtn" type="button">Lịch tuần</button>
+              </div>
+            </div>
+            <div class="calendar-nav">
+              <button class="ghost-button" id="calendarPrev" type="button" aria-label="Lùi">‹</button>
+              <strong id="calendarMonthLabel"></strong>
+              <button class="ghost-button" id="calendarNext" type="button" aria-label="Tiến">›</button>
+              <button class="ghost-button" id="calendarToday" type="button">Hôm nay</button>
             </div>
           </div>
-          <div class="calendar-nav">
-            <button class="ghost-button" id="calendarPrev" type="button" aria-label="Lùi">‹</button>
-            <strong id="calendarMonthLabel"></strong>
-            <button class="ghost-button" id="calendarNext" type="button" aria-label="Tiến">›</button>
-            <button class="ghost-button" id="calendarToday" type="button">Hôm nay</button>
+          <div id="calendarMonthView">
+            <div class="calendar-weekdays" id="calendarWeekdays"></div>
+            <div class="calendar-grid" id="calendarGrid" aria-live="polite"></div>
           </div>
-        </div>
-        <div id="calendarMonthView">
-          <div class="calendar-weekdays" id="calendarWeekdays"></div>
-          <div class="calendar-grid" id="calendarGrid" aria-live="polite"></div>
-        </div>
-        <div class="calendar-week" id="calendarWeek" aria-live="polite" hidden></div>
-      </section>
+          <div class="calendar-week" id="calendarWeek" aria-live="polite" hidden></div>
+        </section>
       </div>
 
       <section class="layout">
