@@ -192,6 +192,24 @@ export function updateTask(taskId, { name, plannedMinutes, category, scheduledDa
   saveAndRender();
 }
 
+// Drag-drop reschedule from the week calendar: move a task to a new day
+// and start minute, snapped to 5 minutes, keeping its planned duration.
+export function rescheduleTask(taskId, newDateKey, startMinute) {
+  const task = state.data.tasks.find((item) => item.id === taskId);
+  if (!task) return;
+
+  const snapped = Math.max(0, Math.min(1435, Math.round(startMinute / 5) * 5));
+  const hh = String(Math.floor(snapped / 60)).padStart(2, "0");
+  const mm = String(snapped % 60).padStart(2, "0");
+  const start = combineDateAndTime(newDateKey, `${hh}:${mm}`);
+  const end = new Date(start.getTime() + task.plannedMinutes * 60 * 1000);
+
+  task.date = newDateKey;
+  task.scheduledStartAt = start.toISOString();
+  task.scheduledEndAt = end.toISOString();
+  saveAndRender();
+}
+
 export function startTask(taskId) {
   syncRunningTask();
   const task = state.data.tasks.find((item) => item.id === taskId);

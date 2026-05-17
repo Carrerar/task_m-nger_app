@@ -4,6 +4,7 @@ import { render } from "../core/bus.js";
 import { elements } from "../core/dom.js";
 import { todayKey, monthKey, parseDateKey, addDays, startOfWeek, formatTime } from "../core/time.js";
 import { taskCategory, taskColor, scheduledWindow } from "../core/selectors.js";
+import { rescheduleTask } from "./tasks.js";
 
 const WEEKDAY_SHORT = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 const MAX_CHIPS = 3;
@@ -144,6 +145,84 @@ function assignLanes(items) {
   return sorted;
 }
 
+// Pointer-drag a week block to a new day/time. A small move threshold
+// keeps a plain click working as "select that day". Drop is resolved by
+// hit-testing the column under the pointer; the grab offset is preserved
+// so the block's top edge lands where the user expects.
+function attachBlockDrag(block, sourceKey, task, startHour) {
+  let startX = 0;
+  let startY = 0;
+  let grabOffset = 0;
+  let dragging = false;
+  let pointerId = null;
+
+  block.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    grabOffset = event.clientY - block.getBoundingClientRect().top;
+    dragging = false;
+    block._dragged = false;
+    block.setPointerCapture(pointerId);
+  });
+
+  block.addEventListener("pointermove", (event) => {
+    if (pointerId === null) return;
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    if (!dragging && Math.hypot(dx, dy) > 4) {
+      dragging = true;
+      block.classList.add("is-dragging");
+    }
+    if (dragging) {
+      block.style.transform = `translate(${dx}px, ${dy}px)`;
+    }
+  });
+
+  const finish = (event) => {
+    if (pointerId === null) return;
+    const wasDragging = dragging;
+    try { block.releasePointerCapture(pointerId); } catch { /* already released */ }
+    pointerId = null;
+    dragging = false;
+    block.style.transform = "";
+    block.classList.remove("is-dragging");
+    if (!wasDragging) return; // a plain tap -> let the click handler select
+
+    block._dragged = true; // suppress the trailing click
+    const target = document.elementFromPoint(event.clientX, event.clientY);
+    const col = target && target.closest ? target.closest(".cw-col") : null;
+    if (!col || !col.dataset.dateKey) {
+      render(); // dropped outside a day column: snap back
+      return;
+    }
+    const rect = col.getBoundingClientRect();
+    const topPx = event.clientY - rect.top - grabOffset;
+    const minute = startHour * 60 + (topPx / HOUR_HEIGHT) * 60;
+    rescheduleTask(task.id, col.dataset.dateKey, minute);
+  };
+
+  block.addEventListener("pointerup", finish);
+  block.addEventListener("pointercancel", () => {
+    if (pointerId !== null) {
+      try { block.releasePointerCapture(pointerId); } catch { /* noop */ }
+    }
+    pointerId = null;
+    dragging = false;
+    block.style.transform = "";
+    block.classList.remove("is-dragging");
+  });
+
+  block.addEventListener("click", () => {
+    if (block._dragged) {
+      block._dragged = false;
+      return;
+    }
+    selectDate(sourceKey);
+  });
+}
+
 function renderWeek() {
   const weekStart = parseDateKey(ui.calendarWeekStart);
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -213,6 +292,7 @@ function renderWeek() {
   perDay.forEach(({ key, items }) => {
     const col = document.createElement("div");
     col.className = "cw-col";
+    col.dataset.dateKey = key;
     col.style.backgroundSize = `100% ${HOUR_HEIGHT}px`;
 
     items.forEach(({ task, start, end, lane, laneCount }) => {
@@ -227,8 +307,8 @@ function renderWeek() {
       block.style.left = `${lane * width}%`;
       block.style.width = `calc(${width}% - 3px)`;
       block.style.background = taskColor(task, 0);
-      block.title = `${task.name} · ${taskCategory(task)}`;
-      block.addEventListener("click", () => selectDate(key));
+      block.title = `${task.name} · ${taskCategory(task)} · kéo để đổi lịch`;
+      attachBlockDrag(block, key, task, startHour);
       const name = document.createElement("span");
       name.className = "cw-block-name";
       name.textContent = task.name;

@@ -529,10 +529,20 @@ h3 {
   color: #fff;
   text-align: left;
   line-height: 1.15;
+  cursor: grab;
+  touch-action: none;
+  transition: box-shadow 120ms ease;
 }
 
 .cw-block.is-complete {
   opacity: 0.6;
+}
+
+.cw-block.is-dragging {
+  cursor: grabbing;
+  opacity: 0.9;
+  z-index: 6;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
 }
 
 .cw-block-name {
