@@ -41,10 +41,24 @@ export function onAfterSave(fn) {
   afterSave.push(fn);
 }
 
-export function saveData() {
+function persist() {
   state.data.sessions = capSessions(state.data.sessions);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+}
+
+export function saveData() {
+  persist();
   afterSave.forEach((fn) => fn());
+}
+
+// Same local persistence but deliberately does NOT fire afterSave (so it
+// schedules no sync push). Used only for the running timer's periodic
+// checkpoint: that elapsed-time progress is re-derivable from lastStartedAt
+// and reaches the server on the next real change / tab-hide / close anyway,
+// so pushing it every TICK_SAVE_MS would just burn the shared KV write
+// budget (~300 writes/hour per active timer) for nothing.
+export function saveDataLocal() {
+  persist();
 }
 
 // Persist a raw imported payload, then reload through the same normalizer.

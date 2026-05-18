@@ -1,4 +1,4 @@
-import { state, saveData } from "../core/store.js";
+import { state, saveDataLocal } from "../core/store.js";
 import { ui } from "../core/ui-state.js";
 import { saveAndRender, render, renderTick } from "../core/bus.js";
 import { TICK_SAVE_MS } from "../core/constants.js";
@@ -88,7 +88,8 @@ export function startTicker() {
     // JSON.stringify the whole DB every second.
     renderTick();
     if (Date.now() - lastTickSaveAt >= TICK_SAVE_MS) {
-      saveData();
+      // Local-only: don't schedule a sync push for a mid-run checkpoint.
+      saveDataLocal();
       lastTickSaveAt = Date.now();
     }
   }, 1000);

@@ -10,7 +10,7 @@ globalThis.localStorage = {
 };
 
 const { SESSION_CAP } = await import("../js/core/constants.js");
-const { state, saveData, replaceData } = await import("../js/core/store.js");
+const { state, saveData, saveDataLocal, replaceData, onAfterSave } = await import("../js/core/store.js");
 
 function makeSessions(n) {
   return Array.from({ length: n }, (_, i) => ({ id: `s${i}`, seq: i }));
@@ -29,6 +29,19 @@ test("saveData leaves a sub-cap session list untouched", () => {
   state.data.sessions = makeSessions(10);
   saveData();
   assert.equal(state.data.sessions.length, 10);
+});
+
+test("saveDataLocal persists but does NOT fire afterSave; saveData does", () => {
+  let calls = 0;
+  onAfterSave(() => { calls += 1; });
+  state.data.sessions = makeSessions(3);
+
+  saveDataLocal();
+  assert.equal(calls, 0, "local-only save must not schedule a sync push");
+  assert.equal(JSON.parse(mem.get("personal_productivity_data_v1")).sessions.length, 3);
+
+  saveData();
+  assert.equal(calls, 1, "saveData must fire afterSave");
 });
 
 test("replaceData caps an oversized imported payload on reload", () => {
