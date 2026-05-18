@@ -1691,17 +1691,47 @@ select {
   }
 
   .calendar-cell {
-    min-height: 54px;
-    padding: 3px;
+    min-height: 44px;
+    padding: 4px 2px;
+    overflow: hidden;
   }
 
   .calendar-cell .calendar-day-number {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  /* Phone: task names are unreadable at ~44px wide, so collapse each
+     chip to a colour dot. The day's detail lives in the task list
+     below after tapping the day. */
+  .calendar-chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 2px;
   }
 
   .calendar-chip {
-    font-size: 0.62rem;
-    padding: 1px 4px;
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden;
+  }
+
+  .calendar-more {
+    display: none;
+  }
+
+  /* Week view: shrink the time gutter + day columns so ~3 days show
+     before horizontal scroll (was a 620px min crammed into ~360px). */
+  .cw-head,
+  .cw-body {
+    grid-template-columns: 34px repeat(7, minmax(58px, 1fr));
+    min-width: 446px;
   }
 
   .task-form {
@@ -1717,16 +1747,55 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .task-list {
+    gap: 10px;
+  }
+
+  /* Keep the checkbox a small square in the corner instead of a
+     full-width empty bar above every card. */
   .task-card {
-    grid-template-columns: 1fr;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
   }
 
   .check-button {
-    width: 100%;
+    width: 28px;
+    height: 28px;
+  }
+
+  .task-title {
+    font-size: 0.98rem;
   }
 
   .timer-readout {
     grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .time {
+    font-size: 1.5rem;
+  }
+
+  /* Trim the verbose meta to the lines that matter when planning
+     (loại, lịch, dự kiến, đã focus); hide thực-tế/drift/variance/rating
+     which are mostly "chưa…" noise for idle tasks on a small screen. */
+  .task-meta {
+    gap: 4px 10px;
+    font-size: 0.78rem;
+  }
+
+  .task-meta span:nth-child(3),
+  .task-meta span:nth-child(4),
+  .task-meta span:nth-child(7),
+  .task-meta span:nth-child(8) {
+    display: none;
+  }
+
+  .task-actions button {
+    min-height: 40px;
+    padding: 0 12px;
   }
 
   .metrics-grid,

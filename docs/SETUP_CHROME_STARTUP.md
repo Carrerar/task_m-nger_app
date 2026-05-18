@@ -44,8 +44,8 @@ Mỗi lần đăng nhập Windows, server bật và Focus Board tự mở.
 
 ## Cập nhật service worker
 
-`sw.js` cache theo phiên bản (biến `CACHE`, hiện là `focus-board-v16`). Khi
-sửa code, tăng số phiên bản trong `sw.js` (ví dụ `v16` → `v17`) để client nạp
+`sw.js` cache theo phiên bản (biến `CACHE`, hiện là `focus-board-v17`). Khi
+sửa code, tăng số phiên bản trong `sw.js` (ví dụ `v17` → `v18`) để client nạp
 bản mới; cache cũ sẽ tự bị xóa ở lần kích hoạt kế tiếp. Khi thêm file tĩnh
 mới (ảnh, module JS…) nhớ thêm đường dẫn vào mảng `APP_SHELL` để bản offline
 có file đó.
