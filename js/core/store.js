@@ -33,9 +33,18 @@ function loadData() {
 // Single shared holder so every module sees the same data reference.
 export const state = { data: loadData() };
 
+// Listeners run after every local save (used by the sync layer to push).
+// replaceData() deliberately does NOT fire these — adopting a remote
+// snapshot must not bounce straight back to the server.
+const afterSave = [];
+export function onAfterSave(fn) {
+  afterSave.push(fn);
+}
+
 export function saveData() {
   state.data.sessions = capSessions(state.data.sessions);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+  afterSave.forEach((fn) => fn());
 }
 
 // Persist a raw imported payload, then reload through the same normalizer.

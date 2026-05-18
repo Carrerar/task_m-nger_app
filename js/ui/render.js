@@ -166,6 +166,13 @@ function renderTask(task) {
     <span>${task.rating ? `Hiệu quả: ${RATING_LABEL[task.rating]}` : "Chưa đánh giá"}</span>
   `;
 
+  let noteEl = null;
+  if (task.note) {
+    noteEl = document.createElement("div");
+    noteEl.className = "task-note";
+    noteEl.textContent = task.note;
+  }
+
   const actions = document.createElement("div");
   actions.className = "task-actions";
 
@@ -197,7 +204,9 @@ function renderTask(task) {
   }
   actions.append(actionButton("Xóa task", () => deleteTask(task.id), false, "danger-action"));
 
-  main.append(editing ? renderInlineEditor(task) : titleRow, readout, meta, actions);
+  main.append(editing ? renderInlineEditor(task) : titleRow, readout, meta);
+  if (noteEl) main.append(noteEl);
+  main.append(actions);
 
   if (task.status === "complete") {
     main.append(renderRatingBox(task));

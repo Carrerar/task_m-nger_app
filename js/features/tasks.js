@@ -125,7 +125,7 @@ function resolveScheduledStart(dateKey, explicitTime, gapMinutes) {
   return combineDateAndTime(dateKey, "08:00");
 }
 
-export function addTask(name, plannedMinutes, category, scheduledDate, scheduledTime) {
+export function addTask(name, plannedMinutes, category, scheduledDate, scheduledTime, note) {
   const seconds = plannedMinutes * 60;
   const normalizedCategory = normalizeCategory(category);
   if (normalizedCategory) {
@@ -140,6 +140,7 @@ export function addTask(name, plannedMinutes, category, scheduledDate, scheduled
   state.data.tasks.unshift({
     id: createId(),
     name,
+    note: (note || "").trim(),
     category: normalizedCategory,
     plannedMinutes,
     date,
@@ -159,7 +160,7 @@ export function addTask(name, plannedMinutes, category, scheduledDate, scheduled
   saveAndRender();
 }
 
-export function updateTask(taskId, { name, plannedMinutes, category, scheduledDate, scheduledTime }) {
+export function updateTask(taskId, { name, plannedMinutes, category, scheduledDate, scheduledTime, note }) {
   const task = state.data.tasks.find((item) => item.id === taskId);
   if (!task) return;
 
@@ -175,6 +176,8 @@ export function updateTask(taskId, { name, plannedMinutes, category, scheduledDa
   const scheduledEnd = new Date(scheduledStart.getTime() + plannedMinutes * 60 * 1000);
 
   task.name = name;
+  // Inline editor omits note -> keep the existing note untouched.
+  if (note !== undefined) task.note = (note || "").trim();
   task.category = normalizedCategory;
   task.plannedMinutes = plannedMinutes;
   task.date = date;

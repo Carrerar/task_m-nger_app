@@ -24,6 +24,7 @@ function createTaskFromTemplate(template, dateKey) {
     id: createId(),
     recurringId: template.id,
     name: template.name,
+    note: template.note || "",
     category: template.category || "",
     plannedMinutes: template.plannedMinutes,
     date: dateKey,
@@ -69,7 +70,7 @@ export function applyRecurringToday() {
   return created;
 }
 
-export function addRecurring({ name, plannedMinutes, category, startTime, type, weekday }) {
+export function addRecurring({ name, plannedMinutes, category, startTime, type, weekday, note }) {
   const normalizedCategory = normalizeCategory(category);
   if (normalizedCategory) {
     state.data.categories = normalizeCategories([...(state.data.categories || []), normalizedCategory]);
@@ -78,6 +79,7 @@ export function addRecurring({ name, plannedMinutes, category, startTime, type, 
   state.data.recurring.push({
     id: createId(),
     name,
+    note: (note || "").trim(),
     plannedMinutes,
     category: normalizedCategory,
     startTime: startTime || "",

@@ -1,0 +1,13 @@
+# Deploy with:  npx wrangler deploy   (run inside the worker/ folder)
+# First: create a KV namespace and paste its id below.
+#   npx wrangler kv namespace create STATE
+# Then set the secret (do NOT commit it):
+#   npx wrangler secret put SYNC_TOKEN
+
+name = "focus-board-sync"
+main = "sync-worker.js"
+compatibility_date = "2024-09-01"
+
+[[kv_namespaces]]
+binding = "STATE"
+id = "d1c6ac8be59e44538f1b8d29218c49a8"

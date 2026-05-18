@@ -1,4 +1,4 @@
-import { state, saveData } from "./core/store.js";
+import { state, saveData, onAfterSave } from "./core/store.js";
 import { ui } from "./core/ui-state.js";
 import { setRenderer, setTickRenderer, render } from "./core/bus.js";
 import { elements } from "./core/dom.js";
@@ -24,6 +24,15 @@ import { renderDashboard, renderClockNow } from "./features/dashboard.js";
 import { renderCalendar, shiftPeriod, goToToday, setCalendarView } from "./features/calendar.js";
 import { initTrain } from "./ui/train.js";
 import { exportData, importData } from "./features/io.js";
+import {
+  getSyncConfig,
+  setSyncConfig,
+  syncEnabled,
+  syncStatus,
+  onSyncStatus,
+  pull,
+  schedulePush,
+} from "./features/sync.js";
 
 function formatDateLabel() {
   const formatter = new Intl.DateTimeFormat("vi-VN", {
@@ -68,11 +77,12 @@ elements.taskForm.addEventListener("submit", (event) => {
   const scheduledTime = elements.taskStartTime.value;
   const category = elements.taskCategory.value;
   const repeat = elements.taskRepeat.value;
+  const note = elements.taskNote.value;
   if (!name || !Number.isFinite(plannedMinutes) || plannedMinutes < 1) return;
 
   const wasEditing = Boolean(ui.editingTaskId);
   if (wasEditing) {
-    updateTask(ui.editingTaskId, { name, plannedMinutes, category, scheduledDate, scheduledTime });
+    updateTask(ui.editingTaskId, { name, plannedMinutes, category, scheduledDate, scheduledTime, note });
     ui.editingTaskId = null;
   } else if (repeat && repeat !== "none") {
     addRecurring({
@@ -82,9 +92,10 @@ elements.taskForm.addEventListener("submit", (event) => {
       startTime: scheduledTime,
       type: repeat,
       weekday: parseDateKey(scheduledDate).getDay(),
+      note,
     });
   } else {
-    addTask(name, plannedMinutes, category, scheduledDate, scheduledTime);
+    addTask(name, plannedMinutes, category, scheduledDate, scheduledTime, note);
   }
 
   const boardTarget = !wasEditing && repeat && repeat !== "none" ? todayKey() : scheduledDate;
@@ -94,6 +105,7 @@ elements.taskForm.addEventListener("submit", (event) => {
   elements.taskName.value = "";
   elements.taskMinutes.value = "25";
   elements.taskStartTime.value = "";
+  elements.taskNote.value = "";
   elements.taskRepeat.value = "none";
   elements.taskName.focus();
   render();
@@ -112,6 +124,54 @@ elements.importFile.addEventListener("change", (event) => {
   if (file) importData(file);
   event.target.value = "";
 });
+const SYNC_STATUS_TEXT = {
+  off: "",
+  syncing: "Đang đồng bộ…",
+  ok: "Đã đồng bộ ✓",
+  error: "Lỗi đồng bộ — bấm để thử lại",
+};
+
+function renderSyncStatus(status) {
+  const enabled = syncEnabled();
+  elements.syncStatus.hidden = !enabled;
+  elements.syncButton.textContent = enabled ? "Đồng bộ ngay" : "Đồng bộ thiết bị";
+  if (!enabled) return;
+  elements.syncStatus.textContent = SYNC_STATUS_TEXT[status] || "";
+  elements.syncStatus.dataset.state = status;
+}
+
+onSyncStatus(renderSyncStatus);
+onAfterSave(schedulePush);
+
+async function syncNow() {
+  const adopted = await pull();
+  if (!adopted) return;
+  render();
+  if (activeTask()) startTicker();
+}
+
+function configureSync() {
+  const current = getSyncConfig();
+  const url = window.prompt(
+    "URL của Worker đồng bộ (ví dụ https://focus-board-sync.<tên>.workers.dev):",
+    current.url,
+  );
+  if (url === null) return;
+  const token = window.prompt("Mã bí mật (SYNC_TOKEN) — nhập trên mọi thiết bị của bạn:", current.token);
+  if (token === null) return;
+  setSyncConfig(url, token);
+  renderSyncStatus(syncStatus());
+  if (syncEnabled()) syncNow();
+}
+
+elements.syncButton.addEventListener("click", (event) => {
+  if (event.shiftKey || !syncEnabled()) {
+    configureSync();
+  } else {
+    syncNow();
+  }
+});
+
 elements.cancelEditButton.addEventListener("click", cancelEdit);
 elements.taskBoardDate.addEventListener("change", () => {
   ui.taskBoardDate = elements.taskBoardDate.value || todayKey();
@@ -176,6 +236,9 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     syncRunningTask();
     saveData();
+  } else if (document.visibilityState === "visible" && syncEnabled()) {
+    // Coming back to the tab/PWA: another device may have moved ahead.
+    syncNow();
   }
 });
 
@@ -193,3 +256,6 @@ if (activeTask()) {
   startTicker();
 }
 initTrain();
+
+renderSyncStatus(syncStatus());
+if (syncEnabled()) syncNow();

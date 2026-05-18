@@ -9,3 +9,7 @@ node_modules/
 
 # Local data backups exported from the app
 focus-board-backup-*.json
+
+# Cloudflare Wrangler local state (never commit deploy creds/secrets)
+.wrangler/
+.dev.vars

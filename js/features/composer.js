@@ -81,6 +81,7 @@ export function startEditTask(taskId) {
   elements.taskMinutes.value = task.plannedMinutes;
   elements.taskDate.value = task.date;
   elements.taskStartTime.value = formatTimeInput(start);
+  elements.taskNote.value = task.note || "";
   elements.taskRepeat.value = "none";
   renderCategoryControls();
   elements.taskCategory.value = task.category || "";
@@ -95,5 +96,6 @@ export function cancelEdit() {
   elements.taskMinutes.value = "25";
   elements.taskDate.value = ui.taskBoardDate;
   elements.taskStartTime.value = "";
+  elements.taskNote.value = "";
   render();
 }

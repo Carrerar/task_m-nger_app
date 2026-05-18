@@ -1,4 +1,4 @@
-const CACHE = "focus-board-v13";
+const CACHE = "focus-board-v15";
 
 const APP_SHELL = [
   "./",
@@ -18,6 +18,7 @@ const APP_SHELL = [
   "./js/core/dom.js",
   "./js/features/tasks.js",
   "./js/features/recurring.js",
+  "./js/features/sync.js",
   "./js/features/categories.js",
   "./js/features/composer.js",
   "./js/features/io.js",
@@ -45,6 +46,10 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+
+  // Never intercept cross-origin calls (the sync Worker lives elsewhere) —
+  // let them hit the network directly, untouched and uncached.
+  if (new URL(request.url).origin !== self.location.origin) return;
 
   // Navigations: serve cached index.html when offline.
   if (request.mode === "navigate") {

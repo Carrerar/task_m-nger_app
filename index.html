@@ -58,6 +58,8 @@
               <button class="ghost-button" id="clearCompletedButton" type="button">Ẩn task xong</button>
               <button class="ghost-button" id="exportButton" type="button">Xuất dữ liệu</button>
               <button class="ghost-button" id="importButton" type="button">Nhập dữ liệu</button>
+              <button class="ghost-button" id="syncButton" type="button" title="Đồng bộ nhiều thiết bị. Giữ Shift + bấm để đổi cấu hình.">Đồng bộ thiết bị</button>
+              <span class="sync-status" id="syncStatus" hidden></span>
               <input id="importFile" type="file" accept="application/json,.json" hidden>
             </div>
           </div>
@@ -113,6 +115,10 @@
                   <option value="weekdays">Thứ 2 - Thứ 6</option>
                   <option value="weekly">Hằng tuần (theo thứ)</option>
                 </select>
+              </label>
+              <label class="task-note-field">
+                Ghi chú
+                <textarea id="taskNote" name="taskNote" rows="2" placeholder="Ghi rõ những gì cần làm trong task này..." autocomplete="off"></textarea>
               </label>
               <button type="submit" id="taskSubmitButton">Thêm task</button>
             </form>
