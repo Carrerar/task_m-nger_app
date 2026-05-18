@@ -35,7 +35,6 @@ function activeZoneColor() {
 export function initTrain() {
   if (typeof document === "undefined" || typeof document.createElementNS !== "function") return;
   if (!window.requestAnimationFrame || !document.body) return;
-  if (window.matchMedia && window.matchMedia("(max-width: 760px)").matches) return;
 
   const root = document.createElement("div");
   root.className = "train-rail";

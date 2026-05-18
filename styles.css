@@ -114,8 +114,10 @@ button:disabled {
 }
 
 @media (max-width: 760px) {
+  /* Keep the progress train on small screens, just slimmer so it rides
+     the left edge instead of covering the cards. */
   .train-rail {
-    display: none;
+    width: 34px;
   }
 }
 
@@ -1652,6 +1654,15 @@ select {
   .app-shell {
     width: min(100% - 20px, 1180px);
     padding-top: 18px;
+    /* Reserve the left strip for the (now slimmer) progress train so it
+       no longer overlaps the cards. */
+    padding-left: 38px;
+  }
+
+  /* Phone: no per-task efficiency rating — the minimal card is just
+     name + timer + core actions. */
+  .rating-box {
+    display: none;
   }
 
   /* Phone hero: drop the 100px desktop side padding so the title sits

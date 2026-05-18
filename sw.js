@@ -1,4 +1,4 @@
-const CACHE = "focus-board-v19";
+const CACHE = "focus-board-v20";
 
 const APP_SHELL = [
   "./",
