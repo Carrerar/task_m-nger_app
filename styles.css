@@ -115,10 +115,10 @@ button:disabled {
 
 @media (max-width: 760px) {
   /* Keep the progress train on small screens. It's a pointer-events:none
-     overlay, so make it thin enough to ride entirely within the page
-     edge gutter — no reserved layout space, no squeezing the app. */
+     overlay (no reserved layout space), wide enough to read clearly and
+     allowed to ride lightly over the left edge of the cards. */
   .train-rail {
-    width: 20px;
+    width: 40px;
   }
 }
 
@@ -1653,8 +1653,18 @@ select {
 
 @media (max-width: 640px) {
   .app-shell {
-    width: min(100% - 20px, 1180px);
+    width: min(100% - 8px, 1180px);
     padding-top: 18px;
+  }
+
+  /* Phone: shrink the side gutters so the cards use nearly the full
+     screen width (was clamp(14px,6vw,100px) ≈ 24px each side). */
+  .layout {
+    padding: 0 8px;
+  }
+
+  .task-panel {
+    padding: 14px;
   }
 
   /* Phone: no per-task efficiency rating — the minimal card is just
