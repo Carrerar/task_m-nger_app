@@ -1654,9 +1654,37 @@ select {
     padding-top: 18px;
   }
 
+  /* Phone hero: drop the 100px desktop side padding so the title sits
+     hard against the top-left, and lock the box to the artwork's
+     ~square ratio so `cover` no longer crops the train off the bottom
+     of the image. */
+  .hero {
+    padding: 0;
+    aspect-ratio: 1 / 1;
+    background-position: center bottom;
+  }
+
+  .hero::before {
+    /* lighten the heavy bottom scrim so the returning train reads clearly */
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 16, 0.22) 0%,
+      rgba(11, 11, 16, 0.05) 45%,
+      rgba(11, 11, 16, 0.42) 100%
+    );
+  }
+
   .topbar {
     display: grid;
+    justify-items: start;
     align-items: start;
+    align-content: start;
+    gap: 12px;
+    padding: 22px 20px 0;
+  }
+
+  .topbar h1 {
+    font-size: clamp(2.7rem, 14vw, 3.8rem);
   }
 
   .section-heading {
