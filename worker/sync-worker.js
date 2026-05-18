@@ -5,11 +5,20 @@
 //   2. Set a secret:  wrangler secret put SYNC_TOKEN   (a long random string)
 //   3. Deploy. The Worker URL + that token go into the app's sync settings.
 //
-// Storage model: one KV key holds { rev, updatedAt, data }. Every PUT bumps
-// rev server-side (last-write-wins). The token is the only gate — keep it
-// secret; anyone with the URL + token can read/write your data.
+// Storage model: one KV key per "room" holds { rev, updatedAt, data }. Every
+// PUT bumps rev server-side (last-write-wins). The shared SYNC_TOKEN gates the
+// Worker against abuse; the room id (URL path, e.g. /<roomId>) namespaces the
+// data so each person has a private board. Anyone with the token AND a given
+// room id can read/write that room — keep the room id long and unguessable.
 
-const KEY = "focus-board-state";
+// Room ids are kept to a small, URL-safe charset so they need no decoding and
+// can't smuggle a sub-path or KV-key separator.
+const ROOM_RE = /^[A-Za-z0-9._-]{6,128}$/;
+
+function roomKey(request) {
+  const path = new URL(request.url).pathname.replace(/^\/+|\/+$/g, "");
+  return ROOM_RE.test(path) ? `state:${path}` : null;
+}
 
 function cors(extra = {}) {
   return {
@@ -37,6 +46,9 @@ export default {
     if (!env.SYNC_TOKEN || token !== env.SYNC_TOKEN) {
       return json({ error: "unauthorized" }, 401);
     }
+
+    const KEY = roomKey(request);
+    if (!KEY) return json({ error: "bad-room" }, 400);
 
     if (request.method === "GET") {
       const stored = await env.STATE.get(KEY);

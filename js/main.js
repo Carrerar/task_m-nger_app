@@ -157,9 +157,14 @@ function configureSync() {
     current.url,
   );
   if (url === null) return;
-  const token = window.prompt("Mã bí mật (SYNC_TOKEN) — nhập trên mọi thiết bị của bạn:", current.token);
+  const token = window.prompt("Mã bí mật chung (SYNC_TOKEN) — giống nhau cho mọi người:", current.token);
   if (token === null) return;
-  setSyncConfig(url, token);
+  const room = window.prompt(
+    "Mã phòng riêng của bạn (chuỗi dài, ngẫu nhiên — đây là khóa bảng riêng; dùng y hệt trên các thiết bị của bạn):",
+    current.room,
+  );
+  if (room === null) return;
+  setSyncConfig(url, token, room);
   renderSyncStatus(syncStatus());
   if (syncEnabled()) syncNow();
 }

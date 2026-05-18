@@ -29,12 +29,30 @@ test("in sync or local ahead -> noop", () => {
 });
 
 test("config round-trips and clears rev when disabled", () => {
-  setSyncConfig("https://x.workers.dev", "secret");
+  setSyncConfig("https://x.workers.dev", "secret", "my-private-room");
   mem.set("fb_sync_rev", "12");
   assert.equal(syncEnabled(), true);
-  assert.deepEqual(getSyncConfig(), { url: "https://x.workers.dev", token: "secret" });
+  assert.deepEqual(getSyncConfig(), {
+    url: "https://x.workers.dev",
+    token: "secret",
+    room: "my-private-room",
+  });
 
-  setSyncConfig("", "");
+  setSyncConfig("", "", "");
   assert.equal(syncEnabled(), false);
   assert.equal(mem.has("fb_sync_rev"), false, "rev cleared when sync turned off");
+});
+
+test("sync needs all three: url, token AND room", () => {
+  setSyncConfig("https://x.workers.dev", "secret", "");
+  assert.equal(syncEnabled(), false, "no room -> disabled");
+  setSyncConfig("https://x.workers.dev", "secret", "room-a");
+  assert.equal(syncEnabled(), true);
+});
+
+test("changing room forgets the last-seen rev", () => {
+  setSyncConfig("https://x.workers.dev", "secret", "room-a");
+  mem.set("fb_sync_rev", "9");
+  setSyncConfig("https://x.workers.dev", "secret", "room-b");
+  assert.equal(mem.has("fb_sync_rev"), false, "rev belongs to a room; reset on switch");
 });

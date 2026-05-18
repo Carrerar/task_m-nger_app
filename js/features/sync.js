@@ -12,6 +12,7 @@ import { state, replaceData } from "../core/store.js";
 
 const URL_KEY = "fb_sync_url";
 const TOKEN_KEY = "fb_sync_token";
+const ROOM_KEY = "fb_sync_room";
 const REV_KEY = "fb_sync_rev";
 const PUSH_DEBOUNCE_MS = 4000;
 
@@ -24,22 +25,29 @@ export function getSyncConfig() {
   return {
     url: localStorage.getItem(URL_KEY) || "",
     token: localStorage.getItem(TOKEN_KEY) || "",
+    room: localStorage.getItem(ROOM_KEY) || "",
   };
 }
 
-export function setSyncConfig(url, token) {
+export function setSyncConfig(url, token, room) {
   const u = (url || "").trim();
   const t = (token || "").trim();
+  const r = (room || "").trim();
+  const roomChanged = r !== (localStorage.getItem(ROOM_KEY) || "");
   if (u) localStorage.setItem(URL_KEY, u);
   else localStorage.removeItem(URL_KEY);
   if (t) localStorage.setItem(TOKEN_KEY, t);
   else localStorage.removeItem(TOKEN_KEY);
-  if (!u || !t) localStorage.removeItem(REV_KEY);
+  if (r) localStorage.setItem(ROOM_KEY, r);
+  else localStorage.removeItem(ROOM_KEY);
+  // The last-seen rev belongs to one room's snapshot. Forget it when sync is
+  // turned off OR the room changes, so the next pull adopts/seeds cleanly.
+  if (!u || !t || !r || roomChanged) localStorage.removeItem(REV_KEY);
 }
 
 export function syncEnabled() {
-  const { url, token } = getSyncConfig();
-  return Boolean(url && token);
+  const { url, token, room } = getSyncConfig();
+  return Boolean(url && token && room);
 }
 
 export function syncStatus() {
@@ -74,8 +82,10 @@ export function decideSync(currentRev, remote) {
 }
 
 async function api(method, body) {
-  const { url, token } = getSyncConfig();
-  const res = await fetch(url, {
+  const { url, token, room } = getSyncConfig();
+  // Worker namespaces data by room id taken from the URL path: /<room>.
+  const endpoint = `${url.replace(/\/+$/, "")}/${encodeURIComponent(room)}`;
+  const res = await fetch(endpoint, {
     method,
     headers: {
       Authorization: `Bearer ${token}`,
