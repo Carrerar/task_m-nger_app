@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Local productivity board: tasks, timers, recurring schedules, calendar and dashboard. Vanilla ES modules, no runtime dependencies.",
   "scripts": {
+    "build": "node scripts/build-static.mjs",
     "test": "node --test",
     "serve": "node serve.mjs"
   }
