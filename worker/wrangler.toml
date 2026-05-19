@@ -3,6 +3,14 @@
 #   npx wrangler kv namespace create STATE
 # Then set the secret (do NOT commit it):
 #   npx wrangler secret put SYNC_TOKEN
+#
+# Optional — AI assistant proxy (secrets, never commit; room ids stay private
+# so they are NOT listed here):
+#   npx wrangler secret put GOOGLE_AI_API_KEY   # from Google AI Studio
+#   npx wrangler secret put AI_ROOMS            # comma-separated room ids
+# Optional override for the soft per-room daily cap (plain number, safe here):
+#   [vars]
+#   AI_DAILY_CAP = "100"
 
 name = "focus-board-sync"
 main = "sync-worker.js"

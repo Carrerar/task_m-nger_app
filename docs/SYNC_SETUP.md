@@ -94,6 +94,46 @@ giờ vào git**. Đổi token = đặt lại secret ở bước A rồi nhập 
 > đồng bộ lần đầu vào mã phòng mới (đang rỗng) sẽ tự **đẩy dữ liệu lên**. Chỉ
 > cần đảm bảo thiết bị có dữ liệu đồng bộ *trước* các thiết bị trống.
 
+## D. (Tùy chọn) Bật trợ lý AI
+
+Trợ lý AI dùng model **Gemini 2.0 Flash** (Google AI Studio — miễn phí ở
+mức cá nhân/nhóm nhỏ). Worker đóng vai *proxy*: khóa API nằm hoàn toàn ở
+server, **không bao giờ lộ ra trình duyệt**.
+
+> Đây mới là phần **proxy** (bước nền). Khung chat trong app sẽ thêm ở bước
+> sau — hiện endpoint `/ai` chỉ phục vụ tích hợp, chưa có giao diện.
+
+1. Vào [Google AI Studio](https://aistudio.google.com/) → tạo API key (miễn
+   phí).
+2. Đặt 2 secret cho Worker (**không commit**; room id để ở secret nên không
+   nằm trong repo):
+
+   ```bash
+   cd worker
+   npx wrangler secret put GOOGLE_AI_API_KEY   # dán key vừa tạo
+   npx wrangler secret put AI_ROOMS            # mã phòng được phép, cách nhau bằng dấu phẩy
+   npx wrangler deploy
+   ```
+
+   `AI_ROOMS` là danh sách những mã phòng *bạn cho phép* gọi AI — đây là
+   cổng kiểm soát chi phí. Phòng không nằm trong danh sách → Worker trả
+   `403 ai-forbidden`.
+
+3. (Tùy chọn) Trần gọi mỗi phòng mỗi ngày mặc định **100**. Đổi bằng cách
+   thêm vào `worker/wrangler.toml` (số thuần, an toàn để commit):
+
+   ```toml
+   [vars]
+   AI_DAILY_CAP = "100"
+   ```
+
+   Vượt trần → `429 ai-daily-cap`. Đây là *trần an toàn chống vòng lặp
+   chạy hoang*, không phải đồng hồ tính tiền chính xác (KV nhất quán cuối
+   cùng nên đếm có thể hụt khi gọi đồng thời). Giới hạn cứng thật sự là
+   Gemini free tier (~1500 lượt/ngày).
+
+Endpoint: `POST <URL Worker>/<mã phòng>/ai` — cùng `SYNC_TOKEN` như sync.
+
 ## Khắc phục sự cố
 
 - **“Lỗi đồng bộ”**: sai URL/token/mã phòng, hoặc Worker chưa deploy.
