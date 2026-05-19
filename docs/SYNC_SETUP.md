@@ -96,21 +96,22 @@ giờ vào git**. Đổi token = đặt lại secret ở bước A rồi nhập 
 
 ## D. (Tùy chọn) Bật trợ lý AI
 
-Trợ lý AI dùng model **Gemini 2.0 Flash** (Google AI Studio — miễn phí ở
-mức cá nhân/nhóm nhỏ). Worker đóng vai *proxy*: khóa API nằm hoàn toàn ở
-server, **không bao giờ lộ ra trình duyệt**.
+Trợ lý AI dùng **Anthropic Claude API** (mặc định khuyến nghị: Claude
+Haiku 4.5 — rẻ, tool-use tốt). Worker đóng vai *proxy*: khóa API nằm hoàn
+toàn ở server, **không bao giờ lộ ra trình duyệt**.
 
 > Đây mới là phần **proxy** (bước nền). Khung chat trong app sẽ thêm ở bước
-> sau — hiện endpoint `/ai` chỉ phục vụ tích hợp, chưa có giao diện.
+> sau — hiện endpoint `/ai` chỉ phục vụ tích hợp, chưa có giao diện. Tên
+> model do client gửi trong body, proxy không hard-code.
 
-1. Vào [Google AI Studio](https://aistudio.google.com/) → tạo API key (miễn
-   phí).
+1. Vào [console.anthropic.com](https://console.anthropic.com/) → Billing nạp
+   credit → API Keys → tạo key (dạng `sk-ant-...`).
 2. Đặt 2 secret cho Worker (**không commit**; room id để ở secret nên không
    nằm trong repo):
 
    ```bash
    cd worker
-   npx wrangler secret put GOOGLE_AI_API_KEY   # dán key vừa tạo
+   npx wrangler secret put ANTHROPIC_API_KEY   # dán key vừa tạo (sk-ant-...)
    npx wrangler secret put AI_ROOMS            # mã phòng được phép, cách nhau bằng dấu phẩy
    npx wrangler deploy
    ```
@@ -128,9 +129,9 @@ server, **không bao giờ lộ ra trình duyệt**.
    ```
 
    Vượt trần → `429 ai-daily-cap`. Đây là *trần an toàn chống vòng lặp
-   chạy hoang*, không phải đồng hồ tính tiền chính xác (KV nhất quán cuối
-   cùng nên đếm có thể hụt khi gọi đồng thời). Giới hạn cứng thật sự là
-   Gemini free tier (~1500 lượt/ngày).
+   chạy hoang* (và chặn chi tiêu lố mỗi phòng/ngày khi dùng key trả phí),
+   không phải đồng hồ tính tiền chính xác (KV nhất quán cuối cùng nên đếm
+   có thể hụt khi gọi đồng thời).
 
 Endpoint: `POST <URL Worker>/<mã phòng>/ai` — cùng `SYNC_TOKEN` như sync.
 

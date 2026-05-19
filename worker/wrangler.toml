@@ -6,7 +6,7 @@
 #
 # Optional — AI assistant proxy (secrets, never commit; room ids stay private
 # so they are NOT listed here):
-#   npx wrangler secret put GOOGLE_AI_API_KEY   # from Google AI Studio
+#   npx wrangler secret put ANTHROPIC_API_KEY   # from console.anthropic.com
 #   npx wrangler secret put AI_ROOMS            # comma-separated room ids
 # Optional override for the soft per-room daily cap (plain number, safe here):
 #   [vars]

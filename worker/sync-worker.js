@@ -4,7 +4,7 @@
 //   1. Create a KV namespace, bind it to this Worker as  STATE
 //   2. Set a secret:  wrangler secret put SYNC_TOKEN   (a long random string)
 //   3. (optional, for the AI assistant) set two more secrets:
-//        wrangler secret put GOOGLE_AI_API_KEY   (from Google AI Studio)
+//        wrangler secret put ANTHROPIC_API_KEY   (from console.anthropic.com)
 //        wrangler secret put AI_ROOMS            (comma-separated room ids)
 //   4. Deploy. The Worker URL + SYNC_TOKEN go into the app's sync settings.
 //
@@ -14,10 +14,11 @@
 // data so each person has a private board. Anyone with the token AND a given
 // room id can read/write that room — keep the room id long and unguessable.
 //
-// AI proxy: POST /<roomId>/ai forwards the request body to Google's Gemini
-// API with GOOGLE_AI_API_KEY injected server-side (key never reaches the
-// browser). Only rooms in the AI_ROOMS allowlist may use it, and each room
-// gets a soft per-UTC-day call cap to guard against runaway tool loops.
+// AI proxy: POST /<roomId>/ai forwards the request body to Anthropic's
+// Messages API with ANTHROPIC_API_KEY injected server-side (key never reaches
+// the browser). The client sends an Anthropic-shaped body; this proxy stays a
+// thin pass-through. Only rooms in the AI_ROOMS allowlist may use it, and each
+// room gets a soft per-UTC-day call cap to guard against runaway tool loops.
 
 // Room ids are kept to a small, URL-safe charset so they need no decoding and
 // can't smuggle a sub-path or KV-key separator.
@@ -25,12 +26,12 @@ const ROOM_RE = /^[A-Za-z0-9._-]{6,128}$/;
 
 // Soft daily ceiling per room (override via env.AI_DAILY_CAP). This is a
 // runaway-loop guard, not a billing-exact meter — KV is eventually consistent
-// so concurrent requests can undercount. The real hard limit is the Gemini
-// free tier (~1500 req/day).
+// so concurrent requests can undercount. With a paid Anthropic key this also
+// caps spend per room per day.
 const DEFAULT_AI_DAILY_CAP = 100;
 
-const GEMINI_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const ANTHROPIC_ENDPOINT = "https://api.anthropic.com/v1/messages";
+const ANTHROPIC_VERSION = "2023-06-01";
 
 // Pure: parse a pathname into a route descriptor, or null if it isn't one we
 // serve. `/<room>` -> sync; `/<room>/ai` -> AI proxy. Anything else -> null.
@@ -93,7 +94,7 @@ async function handleAi(request, env, room) {
   if (request.method !== "POST") {
     return json({ error: "method-not-allowed" }, 405);
   }
-  if (!env.GOOGLE_AI_API_KEY) {
+  if (!env.ANTHROPIC_API_KEY) {
     return json({ error: "ai-not-configured" }, 503);
   }
   if (!roomAllowed(room, env.AI_ROOMS)) {
@@ -120,9 +121,13 @@ async function handleAi(request, env, room) {
 
   let upstream;
   try {
-    upstream = await fetch(`${GEMINI_ENDPOINT}?key=${env.GOOGLE_AI_API_KEY}`, {
+    upstream = await fetch(ANTHROPIC_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": env.ANTHROPIC_API_KEY,
+        "anthropic-version": ANTHROPIC_VERSION,
+      },
       body: JSON.stringify(body),
     });
   } catch {
