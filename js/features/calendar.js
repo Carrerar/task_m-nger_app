@@ -308,6 +308,7 @@ function renderWeek() {
       block.style.width = `calc(${width}% - 3px)`;
       block.style.background = taskColor(task, 0);
       block.title = `${task.name} · ${taskCategory(task)} · kéo để đổi lịch`;
+      if (height >= HOUR_HEIGHT) block.classList.add("is-tall");
       attachBlockDrag(block, key, task, startHour);
       const name = document.createElement("span");
       name.className = "cw-block-name";
@@ -317,6 +318,12 @@ function renderWeek() {
       const win = scheduledWindow(task);
       time.textContent = `${formatTime(win.start)}–${formatTime(win.end)}`;
       block.append(name, time);
+      if (task.note) {
+        const noteEl = document.createElement("span");
+        noteEl.className = "cw-block-note";
+        noteEl.textContent = task.note;
+        block.append(noteEl);
+      }
       col.append(block);
     });
 

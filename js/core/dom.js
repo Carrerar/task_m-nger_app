@@ -24,6 +24,7 @@ export const elements = {
   taskRepeat: document.querySelector("#taskRepeat"),
   recurringManager: document.querySelector("#recurringManager"),
   recurringList: document.querySelector("#recurringList"),
+  recurringCollapseBtn: document.querySelector("#recurringCollapseBtn"),
   newCategoryName: document.querySelector("#newCategoryName"),
   addCategoryButton: document.querySelector("#addCategoryButton"),
   deleteCategorySelect: document.querySelector("#deleteCategorySelect"),

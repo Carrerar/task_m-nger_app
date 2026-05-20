@@ -1,6 +1,7 @@
 import { state } from "../core/store.js";
 import { saveAndRender } from "../core/bus.js";
 import { elements } from "../core/dom.js";
+import { ui } from "../core/ui-state.js";
 import { RECURRENCE_LABEL, WEEKDAY_LABEL } from "../core/constants.js";
 import { createId, normalizeCategory, normalizeCategories } from "../core/utils.js";
 import { todayKey, parseDateKey, addDays, combineDateAndTime } from "../core/time.js";
@@ -113,6 +114,12 @@ function recurrenceSummary(template) {
 export function renderRecurringList() {
   const templates = state.data.recurring || [];
   elements.recurringManager.hidden = templates.length === 0;
+  if (templates.length === 0) return;
+
+  elements.recurringCollapseBtn.textContent = ui.recurringCollapsed ? "Mở rộng" : "Thu gọn";
+  elements.recurringList.hidden = ui.recurringCollapsed;
+  if (ui.recurringCollapsed) return;
+
   elements.recurringList.innerHTML = "";
   templates.forEach((template) => {
     const item = document.createElement("div");

@@ -51,15 +51,19 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Checklist hôm nay</p>
-              <h2 id="tasksTitle">Task và timer riêng</h2>
+              <h2 id="tasksTitle">Task và timer</h2>
             </div>
             <div class="heading-actions">
-              <button class="ghost-button primary-ghost" id="toggleComposerButton" type="button">Thêm công việc</button>
-              <button class="ghost-button" id="clearCompletedButton" type="button">Ẩn task xong</button>
-              <button class="ghost-button" id="exportButton" type="button">Xuất dữ liệu</button>
-              <button class="ghost-button" id="importButton" type="button">Nhập dữ liệu</button>
-              <button class="ghost-button" id="syncButton" type="button" title="Đồng bộ nhiều thiết bị. Giữ Shift + bấm để đổi cấu hình.">Đồng bộ thiết bị</button>
-              <span class="sync-status" id="syncStatus" hidden></span>
+              <div class="action-primary">
+                <button class="ghost-button primary-ghost" id="toggleComposerButton" type="button">Thêm công việc</button>
+                <button class="ghost-button" id="clearCompletedButton" type="button">Ẩn task xong</button>
+              </div>
+              <div class="action-secondary">
+                <button class="ghost-button" id="exportButton" type="button">Xuất dữ liệu</button>
+                <button class="ghost-button" id="importButton" type="button">Nhập dữ liệu</button>
+                <button class="ghost-button" id="syncButton" type="button" title="Đồng bộ nhiều thiết bị. Giữ Shift + bấm để đổi cấu hình.">Đồng bộ thiết bị</button>
+                <span class="sync-status" id="syncStatus" hidden></span>
+              </div>
               <input id="importFile" type="file" accept="application/json,.json" hidden>
             </div>
           </div>
@@ -124,7 +128,10 @@
             </form>
 
             <div class="recurring-manager" id="recurringManager" hidden>
-              <h3>Lịch lặp lại đang bật</h3>
+              <div class="recurring-header">
+                <h3>Lịch lặp lại đang bật</h3>
+                <button class="ghost-button" id="recurringCollapseBtn" type="button">Thu gọn</button>
+              </div>
               <div class="recurring-list" id="recurringList"></div>
             </div>
           </div>

@@ -178,6 +178,10 @@ elements.syncButton.addEventListener("click", (event) => {
 });
 
 elements.cancelEditButton.addEventListener("click", cancelEdit);
+elements.recurringCollapseBtn.addEventListener("click", () => {
+  ui.recurringCollapsed = !ui.recurringCollapsed;
+  renderRecurringList();
+});
 elements.taskBoardDate.addEventListener("change", () => {
   ui.taskBoardDate = elements.taskBoardDate.value || todayKey();
   elements.taskDate.value = ui.taskBoardDate;

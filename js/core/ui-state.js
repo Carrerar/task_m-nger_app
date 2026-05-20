@@ -12,4 +12,5 @@ export const ui = {
   calendarMonth: monthKey(),
   calendarView: "month",
   calendarWeekStart: todayKey(startOfWeek()),
+  recurringCollapsed: false,
 };
