@@ -757,6 +757,10 @@ h3 {
   gap: 8px;
 }
 
+.recurring-list[hidden] {
+  display: none;
+}
+
 .recurring-item {
   display: flex;
   align-items: center;
