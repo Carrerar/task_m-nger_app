@@ -49,12 +49,13 @@ quả đó, không ghi cả quá trình tản mạn.
 1. **Xác minh git** để lấy hash/chính xác: `git log --oneline -10` và
    `git status -sb`. Không suy đoán hash.
 2. Tổng hợp **chỉ những gì mới trong ngày hôm nay** chưa có trong
-   `memory/*.md` hay `WORKLOG.md` sections A–H: commit hash + tên commit,
-   file thay đổi chính, quyết định mới, ràng buộc mới phát sinh, việc treo.
-   Không lặp lại A–H hay memory đã có.
-3. Đọc `docs/WORKLOG.md`. **Append-only**: KHÔNG viết lại / không sửa các
-   mục A–H sẵn có. Tìm mục `## Nhật ký theo ngày (append-only)` ở cuối
-   file:
+   `memory/*.md`, `docs/DESIGN.md` (sổ kỹ thuật) hay `docs/CONVENTIONS.md`
+   (quy ước): commit hash + tên commit, file thay đổi chính, quyết định mới,
+   ràng buộc mới phát sinh, việc treo. Không lặp lại sổ kỹ thuật/quy ước/memory đã có.
+   Nếu có thay đổi **đáng nhớ về cấu trúc** (kiến trúc/thiết kế/tính năng/lỗi-gotcha),
+   gợi ý cập nhật `docs/DESIGN.md` theo chủ đề (khác với mục nhật ký theo ngày).
+3. Đọc `docs/WORKLOG.md` (giờ chỉ chứa nhật ký theo ngày). **Append-only**:
+   KHÔNG sửa mục ngày cũ. Tìm mục `## Nhật ký theo ngày (append-only)`:
    - Nếu có: thêm một mục con `### <YYYY-MM-DD>` mới (hoặc bổ sung vào
      mục ngày hôm nay nếu đã tồn tại — vẫn append, không xoá nội dung cũ).
    - Nếu chưa có: tạo section `## Nhật ký theo ngày (append-only)` ở
@@ -62,7 +63,8 @@ quả đó, không ghi cả quá trình tản mạn.
    - Lấy ngày từ dòng `Today's date` trong context. Chuyển mọi mốc tương
      đối thành ngày tuyệt đối.
 4. Nội dung mục ngày: gạch đầu dòng ngắn — commit hash, file chính, trạng
-   thái (đã push?), quyết định mới, việc treo. Súc tích, không lặp lại A–H.
+   thái (đã push?), quyết định mới, việc treo. Súc tích, không lặp lại
+   lịch sử/quy ước.
 5. Nếu có **fact bền vững / quyết định treo / ràng buộc mới** chưa có trong
    memory: cập nhật memory file tương ứng (1 fact/file + cập nhật
    `MEMORY.md`). Không nhân bản fact đã có.

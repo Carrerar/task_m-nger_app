@@ -30,6 +30,7 @@ Test tập trung vào các module **thuần** (không đụng DOM), trong `tests
 | `tests/store.test.js`     | `js/core/store.js`         | giới hạn số session khi load/save                               |
 | `tests/recurring.test.js` | `js/features/recurring.js` | vật chất hóa lịch lặp theo chân trời ngày, idempotent           |
 | `tests/sync.test.js`      | `js/features/sync.js`      | quyết định pull/push (`decideSync`), lưu/xóa cấu hình sync      |
+| `tests/worker.test.js`    | `worker/sync-worker.js`    | `parseRoute`/`roomAllowed`/`nextCount`/`utcDate` (định tuyến + allowlist + trần gọi AI) |
 
 `selectors.test.js` nạp `store.js` (đọc `localStorage` lúc import) nên có cài
 một stub `localStorage` trong bộ nhớ để kết quả ổn định trên mọi bản Node.
