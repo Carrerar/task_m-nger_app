@@ -26,8 +26,9 @@ function weekLabel(start, end) {
 
 function tasksByDate() {
   const map = new Map();
+  // "Ẩn task xong" only hides archived tasks from the checklist; the calendar
+  // still shows them so the day's full schedule stays visible.
   state.data.tasks
-    .filter((task) => !task.archived)
     .forEach((task) => {
       if (!map.has(task.date)) map.set(task.date, []);
       map.get(task.date).push(task);
